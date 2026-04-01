@@ -1,0 +1,275 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Verify OTP - ResidueSafe</title>
+    <link rel="stylesheet" href="/style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        body, html {
+            height: 100%;
+            margin: 0;
+            font-family: 'Inter', sans-serif;
+            background-color: #f8fafc;
+        }
+        .app-screen {
+            position: relative;
+            min-height: 100vh;
+            width: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow-y: auto;
+            padding: 40px 20px;
+            box-sizing: border-box;
+            background: linear-gradient(135deg, #f0fdf4 0%, #dcfce7 100%);
+        }
+        .header-nav {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            padding: 30px;
+            z-index: 100;
+        }
+        .back-btn {
+            color: #1A202C;
+            font-size: 1.5rem;
+            cursor: pointer;
+            text-decoration: none;
+            width: 45px;
+            height: 45px;
+            background: white;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+            transition: all 0.2s;
+        }
+        .back-btn:hover { transform: translateX(-5px); }
+        
+        .container {
+            position: relative;
+            z-index: 10;
+            width: 100%;
+            max-width: 450px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            animation: fadeIn 0.5s ease-out;
+        }
+        
+        .card {
+            background: white;
+            border-radius: 32px;
+            padding: 45px 35px;
+            width: 100%;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.05);
+            box-sizing: border-box;
+            border: 1px solid #f1f5f9;
+            text-align: center;
+        }
+        
+        .icon-box {
+            width: 80px;
+            height: 80px;
+            background: #f0fdf4;
+            color: #4CAF50;
+            border-radius: 24px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 32px;
+            margin: 0 auto 25px auto;
+            box-shadow: 0 10px 20px rgba(76,175,80,0.1);
+        }
+        
+        .title { color: #1A202C; font-size: 1.8rem; font-weight: 800; margin-bottom: 12px; letter-spacing: -0.5px; }
+        .subtitle { color: #718096; font-size: 0.95rem; line-height: 1.6; margin-bottom: 35px; }
+        .subtitle strong { color: #1A202C; }
+
+        .otp-inputs {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin-bottom: 35px;
+        }
+        
+        .otp-input {
+            width: 65px;
+            height: 65px;
+            text-align: center;
+            font-size: 1.5rem;
+            font-weight: 800;
+            border: 2px solid #f1f5f9;
+            border-radius: 16px;
+            background: #f8fafc;
+            color: #1A202C;
+            transition: all 0.2s;
+        }
+        
+        .otp-input:focus {
+            outline: none;
+            border-color: #4CAF50;
+            background: white;
+            box-shadow: 0 0 0 5px rgba(76,175,80,0.08);
+            transform: translateY(-2px);
+        }
+        
+        .btn-primary {
+            width: 100%;
+            padding: 18px;
+            border: none;
+            border-radius: 17px;
+            background: linear-gradient(135deg, #4CAF50, #22c55e);
+            color: white;
+            font-weight: 800;
+            font-size: 1.1rem;
+            cursor: pointer;
+            box-shadow: 0 12px 24px rgba(76,175,80,0.3);
+            transition: all 0.3s;
+            margin-bottom: 30px;
+        }
+        
+        .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 15px 30px rgba(76,175,80,0.4); }
+        
+        .footer-link { text-align: center; color: #64748b; font-size: 0.95rem; font-weight: 500; }
+        .footer-link a { color: #4CAF50; font-weight: 700; text-decoration: none; margin-left: 5px; }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @media (max-width: 400px) {
+            .otp-input { width: 50px; height: 50px; font-size: 1.25rem; }
+            .otp-inputs { gap: 10px; }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="app-screen">
+        <div class="header-nav">
+            <a href="/forgot_password" class="back-btn"><i class="fas fa-arrow-left"></i></a>
+        </div>
+
+        <div class="container">
+            <div class="card">
+                <div class="icon-box">
+                    <i class="fas fa-paper-plane"></i>
+                </div>
+                
+                <h2 class="title">Verify OTP 📩</h2>
+                <p class="subtitle">Please enter the 4-digit verification code sent to <strong id="displayEmail">your email</strong></p>
+
+                <form id="otpForm">
+                    <div class="otp-inputs">
+                        <input type="text" maxlength="1" class="otp-input" autofocus required>
+                        <input type="text" maxlength="1" class="otp-input" required>
+                        <input type="text" maxlength="1" class="otp-input" required>
+                        <input type="text" maxlength="1" class="otp-input" required>
+                    </div>
+
+                    <button type="submit" class="btn-primary">Verify & Continue</button>
+
+                    <div class="footer-link">
+                        Didn't receive the code? <a href="#" onclick="resendOTP(event)">Resend Code</a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const inputs = document.querySelectorAll('.otp-input');
+        
+        document.addEventListener('DOMContentLoaded', () => {
+            const email = sessionStorage.getItem('resetEmail');
+            if (email) {
+                document.getElementById('displayEmail').textContent = email;
+            }
+        });
+        
+        // Auto-focus next input
+        inputs.forEach((input, index) => {
+            input.addEventListener('input', (e) => {
+                if (e.target.value && index < inputs.length - 1) {
+                    inputs[index + 1].focus();
+                }
+            });
+            input.addEventListener('keydown', (e) => {
+                if (e.key === 'Backspace' && !e.target.value && index > 0) {
+                    inputs[index - 1].focus();
+                }
+            });
+        });
+
+        document.getElementById('otpForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            const email = sessionStorage.getItem('resetEmail');
+            if (!email) {
+                alert("Session expired. Please restart the forgot password process.");
+                window.location.href = '/forgot_password';
+                return;
+            }
+
+            const otp = Array.from(inputs).map(i => i.value).join('');
+            if (otp.length < 4) return;
+
+            const submitBtn = document.querySelector('.btn-primary');
+            submitBtn.disabled = true;
+            submitBtn.textContent = 'Verifying...';
+
+            try {
+                const response = await fetch('http://127.0.0.1:5000/verify-otp', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ email: email, otp: otp })
+                });
+
+                const data = await response.json();
+
+                if (response.ok) {
+                    alert('OTP Verified!');
+                    window.location.href = '/reset_password';
+                } else {
+                    alert(data.message || 'Verification failed');
+                }
+            } catch (error) {
+                console.error('OTP Verification Error:', error);
+                alert('Connection to server failed.');
+            } finally {
+                submitBtn.disabled = false;
+                submitBtn.textContent = 'Verify & Continue';
+            }
+        });
+
+        async function resendOTP(e) {
+            e.preventDefault();
+            const email = sessionStorage.getItem('resetEmail');
+            if (!email) return;
+
+            try {
+                const response = await fetch('http://127.0.0.1:5000/forgot-password', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ email: email })
+                });
+                if (response.ok) alert('New OTP sent!');
+            } catch (error) {
+                console.error('Resend Error:', error);
+            }
+        }
+    </script>
+
+</body>
+</html>

@@ -1,0 +1,531 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add New Animal - ResidueSafe Web</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --sidebar-width: 280px;
+            --bg-color: #F0FDF4; /* Light green background from app */
+            --text-dark: #1A202C;
+            --text-gray: #718096;
+            --primary-green: #4CAF50;
+            --white: #FFFFFF;
+        }
+
+        html, body {
+            margin: 0;
+            padding: 0;
+            height: 100%;
+            width: 100%;
+            overflow: hidden;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-dark);
+            display: grid;
+            grid-template-columns: var(--sidebar-width) 1fr;
+            grid-template-rows: auto 1fr;
+        }
+
+        /* Sidebar Styles */
+        .sidebar {
+            grid-row: 1 / 3;
+            background: linear-gradient(180deg, #102814 0%, #1c4722 100%);
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            color: white;
+            box-shadow: 4px 0 15px rgba(0,0,0,0.05);
+            z-index: 10;
+        }
+        .sidebar-brand {
+            padding: 30px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+        }
+        .sidebar-logo {
+            width: 45px;
+            height: 45px;
+            background: white;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .sidebar-logo img {
+            width: 32px;
+            height: 32px;
+            border-radius: 8px;
+        }
+        .sidebar-title {
+            font-size: 22px;
+            font-weight: 800;
+            margin: 0;
+            letter-spacing: -0.5px;
+        }
+        .sidebar-nav {
+            padding: 30px 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            flex-grow: 1;
+        }
+        .nav-link {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            padding: 16px 20px;
+            border-radius: 12px;
+            color: rgba(255,255,255,0.7);
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 15px;
+            transition: all 0.3s ease;
+        }
+        .nav-link:hover {
+            background: rgba(255,255,255,0.1);
+            color: white;
+        }
+        .nav-link.active {
+            background: var(--primary-green);
+            color: white;
+            box-shadow: 0 4px 15px rgba(76, 175, 80, 0.4);
+        }
+
+        /* Main Wrapper */
+        .main-wrapper {
+            grid-column: 2;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            overflow-y: auto;
+            width: 100%;
+        }
+
+        /* Top Header */
+        .top-header {
+            height: 110px;
+            background: white;
+            display: flex;
+            justify-content: flex-end;
+            align-items: center;
+            padding: 0 50px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.02);
+            position: sticky;
+            top: 0;
+            z-index: 5;
+        }
+        .header-profile-area {
+            display: flex;
+            align-items: center;
+            gap: 25px;
+        }
+        .profile-btn {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            cursor: pointer;
+            text-decoration: none;
+            color: inherit;
+        }
+        .profile-avatar {
+            width: 50px;
+            height: 50px;
+            background: linear-gradient(135deg, #4CAF50, #81C784);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: 700;
+            font-size: 20px;
+            box-shadow: 0 4px 10px rgba(76,175,80,0.3);
+        }
+        .profile-info {
+            display: flex;
+            flex-direction: column;
+        }
+        .profile-name {
+            font-weight: 700;
+            font-size: 16px;
+        }
+        .profile-role {
+            font-size: 13px;
+            color: var(--text-gray);
+        }
+
+        /* Page Content */
+        .content {
+            padding: 40px;
+            flex: 1;
+        }
+
+        /* Header Card */
+        .header-card {
+            background: linear-gradient(135deg, #4CAF50, #81C784);
+            border-radius: 24px;
+            padding: 30px;
+            color: white;
+            margin-bottom: 30px;
+            box-shadow: 0 10px 30px rgba(76, 175, 80, 0.2);
+        }
+        .back-link {
+            color: white;
+            text-decoration: none;
+            font-size: 14px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 15px;
+            opacity: 0.9;
+        }
+        .header-card h1 {
+            font-size: 28px;
+            margin: 0;
+            font-weight: 800;
+            letter-spacing: -0.5px;
+        }
+        .header-card p {
+            font-size: 15px;
+            margin: 5px 0 0 0;
+            opacity: 0.85;
+        }
+
+        /* Form Sections */
+        .form-section {
+            background: white;
+            border-radius: 24px;
+            padding: 30px;
+            margin-bottom: 25px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.03);
+        }
+        .section-title {
+            font-size: 18px;
+            font-weight: 800;
+            color: var(--text-dark);
+            margin-bottom: 25px;
+            display: block;
+        }
+
+        /* Species Selector */
+        .species-grid {
+            display: flex;
+            gap: 20px;
+            overflow-x: auto;
+            padding-bottom: 10px;
+        }
+        .species-chip {
+            border: 2px solid transparent;
+            background: #F8FAFC;
+            border-radius: 20px;
+            padding: 15px;
+            min-width: 100px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 8px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .species-chip.active {
+            border-color: var(--primary-green);
+            background: white;
+        }
+        .chip-img {
+            width: 45px;
+            height: 45px;
+            border-radius: 50%;
+            object-fit: cover;
+        }
+        .chip-label {
+            font-size: 12px;
+            font-weight: 700;
+            color: var(--text-gray);
+        }
+        .species-chip.active .chip-label {
+            color: var(--primary-green);
+        }
+
+        /* Inputs */
+        .form-group {
+            margin-bottom: 20px;
+        }
+        .form-group:last-child { margin-bottom: 0; }
+        .form-label {
+            display: block;
+            font-size: 14px;
+            font-weight: 700;
+            color: #4A5568;
+            margin-bottom: 10px;
+        }
+        .form-input {
+            width: 100%;
+            background: #F8FAFC;
+            border: 1px solid #E2E8F0;
+            border-radius: 12px;
+            padding: 14px 20px;
+            font-size: 14px;
+            color: var(--text-dark);
+            box-sizing: border-box;
+            outline: none;
+            transition: all 0.2s;
+        }
+        .form-input:focus {
+            border-color: var(--primary-green);
+            background: white;
+            box-shadow: 0 0 0 4px rgba(76, 175, 80, 0.1);
+        }
+        .input-hint {
+            font-size: 11px;
+            color: var(--text-gray);
+            margin-top: 6px;
+            display: block;
+        }
+
+        /* Action Buttons */
+        .submit-btn {
+            background: linear-gradient(135deg, #4CAF50, #81C784);
+            color: white;
+            border: none;
+            border-radius: 12px;
+            padding: 18px;
+            font-size: 16px;
+            font-weight: 800;
+            width: 100%;
+            cursor: pointer;
+            box-shadow: 0 4px 15px rgba(76, 175, 80, 0.3);
+            transition: transform 0.2s;
+            margin-bottom: 40px;
+        }
+        .submit-btn:hover { transform: translateY(-2px); }
+
+        /* Logout Modal */
+        .modal-overlay { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(0, 0, 0, 0.4); backdrop-filter: blur(4px); display: none; align-items: center; justify-content: center; z-index: 1000; animation: fadeIn 0.2s ease-out; }
+        .modal-card { background: white; border-radius: 24px; padding: 40px; width: 380px; text-align: center; box-shadow: 0 20px 40px rgba(0,0,0,0.1); transform: scale(0.9); transition: transform 0.2s ease-out; }
+        .modal-overlay.active { display: flex; }
+        .modal-overlay.active .modal-card { transform: scale(1); }
+        .modal-icon { width: 70px; height: 70px; background: #FFF1F2; color: #E11D48; border-radius: 20px; display: flex; align-items: center; justify-content: center; font-size: 28px; margin: 0 auto 20px auto; }
+        .modal-title { font-size: 22px; font-weight: 800; margin-bottom: 10px; }
+        .modal-text { color: var(--text-gray); font-size: 14px; margin-bottom: 25px; line-height: 1.5; }
+        .modal-btns { display: flex; flex-direction: column; gap: 10px; }
+        .m-btn { padding: 14px; border-radius: 12px; font-weight: 700; cursor: pointer; text-decoration: none; transition: all 0.2s; border: none; }
+        .m-btn-logout { background: #E11D48; color: white; }
+        .m-btn-cancel { background: #F1F5F9; color: #475569; }
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+    </style>
+</head>
+<body>
+
+    <!-- Desktop Sidebar -->
+    <aside class="sidebar">
+        <div class="sidebar-brand">
+            <div class="sidebar-logo">
+                <img src="/assets/logo.png" alt="Logo" onerror="this.src='data:image/svg+xml;utf8,<svg xmlns=\'http://www.w3.org/2000/svg\' viewBox=\'0 0 100 100\'><circle cx=\'50\' cy=\'50\' r=\'45\' fill=\'%23e0e0e0\'/><text x=\'50\' y=\'55\' font-family=\'sans-serif\' font-weight=\'bold\' font-size=\'30\' text-anchor=\'middle\' fill=\'%23888\'>RS</text></svg>';">
+            </div>
+            <h2 class="sidebar-title">ResidueSafe</h2>
+        </div>
+        <nav class="sidebar-nav">
+            <a href="/farmer_dashboard" class="nav-link"><i class="fas fa-home"></i> Dashboard</a>
+            <a href="/add_treatment" class="nav-link"><i class="fas fa-syringe"></i> Treatments</a>
+            <a href="/withdrawal_status" class="nav-link"><i class="fas fa-stopwatch"></i> Withdrawal Status</a>
+            <a href="/add_animals" class="nav-link active"><i class="fas fa-paw"></i> Add Animals</a>
+            <a href="/treatment_history" class="nav-link"><i class="fas fa-history"></i> History & Reports</a>
+            <a href="#" class="nav-link" style="margin-top:auto;" onclick="showLogoutModal()"><i class="fas fa-sign-out-alt"></i> Logout</a>
+        </nav>
+    </aside>
+
+    <div class="main-wrapper">
+        <div class="content" style="padding: 20px 60px;">
+            <!-- Header Card -->
+            <div class="header-card">
+                <a href="/add_animals" class="back-link"><i class="fas fa-arrow-left"></i> Back to Animals</a>
+                <h1>Add New Animal</h1>
+                <p>Register a new animal to your farm management system.</p>
+            </div>
+
+            <!-- Species Section -->
+            <div class="form-section">
+                <span class="section-title">Select Species *</span>
+                <div class="species-grid">
+                    <div class="species-chip active">
+                        <img src="https://images.unsplash.com/photo-1570042225831-d98fa7577f1e?auto=format&fit=crop&q=80&w=100" class="chip-img">
+                        <span class="chip-label">Cow</span>
+                    </div>
+                    <div class="species-chip">
+                        <img src="https://images.unsplash.com/photo-1551892305-6490ba826857?auto=format&fit=crop&q=80&w=100" class="chip-img">
+                        <span class="chip-label">Buffalo</span>
+                    </div>
+                    <div class="species-chip">
+                        <img src="https://images.unsplash.com/photo-1516467508483-a7212febe31a?auto=format&fit=crop&q=80&w=100" class="chip-img">
+                        <span class="chip-label">Pig</span>
+                    </div>
+                    <div class="species-chip">
+                        <img src="https://images.unsplash.com/photo-1484557985045-edf25e08da73?auto=format&fit=crop&q=80&w=100" class="chip-img">
+                        <span class="chip-label">Sheep</span>
+                    </div>
+                    <div class="species-chip">
+                        <img src="https://images.unsplash.com/photo-1548550023-2bdb3c5beed7?auto=format&fit=crop&q=80&w=100" class="chip-img">
+                        <span class="chip-label">Hen</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Identification Section -->
+            <div class="form-section">
+                <span class="section-title">Animal Identification</span>
+                <div class="form-group">
+                    <label class="form-label">Tag ID / Number *</label>
+                    <input type="text" class="form-input" placeholder="e.g., COW-903">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Animal Name (Optional)</label>
+                    <input type="text" class="form-input" placeholder="e.g., Bessie">
+                </div>
+            </div>
+
+            <!-- Details Section -->
+            <div class="form-section">
+                <span class="section-title">Animal Details</span>
+                <div class="form-group">
+                    <label class="form-label">Animal Age (Years) *</label>
+                    <input type="number" id="ageYears" class="form-input" placeholder="e.g., 4" min="0" required>
+                    <span class="input-hint">Enter the current age of the animal in years.</span>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Gender *</label>
+                    <select id="gender" class="form-input" required>
+                        <option value="">Select Gender</option>
+                        <option value="Male">Male</option>
+                        <option value="Female">Female</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Weight (kg) *</label>
+                    <input type="number" id="weight" class="form-input" placeholder="e.g., 650" required>
+                    <span class="input-hint">Important for calculating accurate drug dosages.</span>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Breed (Optional)</label>
+                    <input type="text" id="breed" class="form-input" placeholder="e.g., Holstein">
+                </div>
+            </div>
+
+            <button class="submit-btn" id="submitBtn">
+                Confirm & Add to Farm
+            </button>
+        </div>
+    </div>
+
+    <!-- Logout Modal Overlay -->
+    <div class="modal-overlay" id="logoutModal">
+        <div class="modal-card">
+            <div class="modal-icon"><i class="fas fa-sign-out-alt"></i></div>
+            <div class="modal-title">Log Out?</div>
+            <p class="modal-text">Are you sure you want to log out of ResidueSafe? You will need to sign in again to access your farm data.</p>
+            <div class="modal-btns">
+                <button class="m-btn m-btn-logout" onclick="handleLogout()">Yes, Log Out</button>
+                <button class="m-btn m-btn-cancel" onclick="hideLogoutModal()">Cancel</button>
+            </div>
+        </div>
+    </div>
+    <script>
+        function showLogoutModal() { document.getElementById('logoutModal').classList.add('active'); }
+        function hideLogoutModal() { document.getElementById('logoutModal').classList.remove('active'); }
+        function handleLogout() { localStorage.clear(); window.location.href = '/index'; }
+
+        function selectSpecies(chip) {
+            document.querySelectorAll('.species-chip').forEach(c => c.classList.remove('active'));
+            chip.classList.add('active');
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            const userData = localStorage.getItem('user');
+            if (!userData) {
+                window.location.href = '/login';
+                return;
+            }
+
+            document.querySelectorAll('.species-chip').forEach(chip => {
+                chip.onclick = () => selectSpecies(chip);
+            });
+
+            document.getElementById('submitBtn').addEventListener('click', async () => {
+                const user = JSON.parse(userData);
+                const species = document.querySelector('.species-chip.active .chip-label').textContent;
+                const tagId = document.querySelector('input[placeholder="e.g., COW-903"]').value.trim();
+                const animalName = document.querySelector('input[placeholder="e.g., Bessie"]').value;
+                const ageYears = parseInt(document.getElementById('ageYears').value) || 0;
+                const gender = document.getElementById('gender').value;
+                const weight = document.getElementById('weight').value;
+                const breed = document.getElementById('breed').value;
+
+                if (!tagId || ageYears === 0 || !gender || !weight) {
+                    alert("Please fill all required fields (*)");
+                    return;
+                }
+
+                // Validation: Tag ID must have both letters and numbers
+                const alnumRegex = /^(?=.*[a-zA-Z])(?=.*[0-9])[a-zA-Z0-9.\s-]+$/;
+                if (!alnumRegex.test(tagId)) {
+                    alert("Animal ID / Tag Number must contain a combination of letters and numbers (e.g., COW123). Pure letters or pure numbers are not accepted.");
+                    return;
+                }
+
+                // Calculate a dummy DOB from age to keep backend compatibility
+                const today = new Date();
+                const dobDate = new Date(today.getFullYear() - ageYears, today.getMonth(), today.getDate());
+                
+                const d = String(dobDate.getDate()).padStart(2, '0');
+                const m = String(dobDate.getMonth() + 1).padStart(2, '0');
+                const y = dobDate.getFullYear();
+                const formattedDob = `${d}/${m}/${y}`;
+
+                const btn = document.getElementById('submitBtn');
+                btn.disabled = true;
+                btn.textContent = 'Registering Animal...';
+
+                try {
+                    const response = await fetch('http://127.0.0.1:5000/add-animal', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({
+                            user_id: user.id,
+                            species: species,
+                            tag_id: tagId,
+                            animal_name: animalName,
+                            dob: formattedDob,
+                            gender: gender,
+                            weight: weight,
+                            breed: breed
+                        })
+                    });
+
+                    const data = await response.json();
+                    if (response.ok) {
+                        alert(data.message);
+                        window.location.href = '/add_animals';
+                    } else {
+                        alert(data.message || 'Error adding animal');
+                    }
+                } catch (err) {
+                    console.error("Add Animal Error:", err);
+                    alert("Server connection failed.");
+                } finally {
+                    btn.disabled = false;
+                    btn.textContent = 'Confirm & Add to Farm';
+                }
+            });
+        });
+    </script>
+</body>
+</html>

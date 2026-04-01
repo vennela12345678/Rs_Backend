@@ -1,0 +1,639 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add Animals - ResidueSafe Web</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --sidebar-width: 280px;
+            --bg-color: #F4F7FE;
+            --text-dark: #1A202C;
+            --text-gray: #718096;
+            --primary-green: #4CAF50;
+            --white: #FFFFFF;
+        }
+
+        html, body {
+            margin: 0;
+            padding: 0;
+            height: 100%;
+            width: 100%;
+            overflow: hidden;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-dark);
+            display: grid;
+            grid-template-columns: var(--sidebar-width) 1fr;
+            grid-template-rows: auto 1fr;
+        }
+
+        /* Sidebar Styles */
+        .sidebar {
+            grid-row: 1 / 3;
+            background: linear-gradient(180deg, #102814 0%, #1c4722 100%);
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            color: white;
+            box-shadow: 4px 0 15px rgba(0,0,0,0.05);
+            z-index: 10;
+        }
+        .sidebar-brand {
+            padding: 30px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+        }
+        .sidebar-logo {
+            width: 45px;
+            height: 45px;
+            background: white;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .sidebar-logo img {
+            width: 32px;
+            height: 32px;
+            border-radius: 8px;
+        }
+        .sidebar-title {
+            font-size: 22px;
+            font-weight: 800;
+            margin: 0;
+            letter-spacing: -0.5px;
+        }
+        .sidebar-nav {
+            padding: 30px 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            flex-grow: 1;
+        }
+        .nav-link {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            padding: 16px 20px;
+            border-radius: 12px;
+            color: rgba(255,255,255,0.7);
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 15px;
+            transition: all 0.3s ease;
+        }
+        .nav-link:hover {
+            background: rgba(255,255,255,0.1);
+            color: white;
+        }
+        .nav-link.active {
+            background: var(--primary-green);
+            color: white;
+            box-shadow: 0 4px 15px rgba(76, 175, 80, 0.4);
+        }
+
+        /* Main Wrapper */
+        .main-wrapper {
+            grid-column: 2;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            overflow-y: auto;
+            background-color: var(--bg-color);
+            width: 100%;
+        }
+
+        /* Top Header */
+        .top-header {
+            height: 110px;
+            background: white;
+            display: flex;
+            justify-content: flex-end;
+            align-items: center;
+            padding: 0 50px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.02);
+            position: sticky;
+            top: 0;
+            z-index: 5;
+        }
+        .header-profile-area {
+            display: flex;
+            align-items: center;
+            gap: 25px;
+        }
+        .profile-btn {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            cursor: pointer;
+            text-decoration: none;
+            color: inherit;
+        }
+        .profile-avatar {
+            width: 50px;
+            height: 50px;
+            background: linear-gradient(135deg, #4CAF50, #81C784);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: 700;
+            font-size: 20px;
+            box-shadow: 0 4px 10px rgba(76,175,80,0.3);
+        }
+        .profile-info {
+            display: flex;
+            flex-direction: column;
+        }
+        .profile-name {
+            font-weight: 700;
+            font-size: 16px;
+        }
+        .profile-role {
+            font-size: 13px;
+            color: var(--text-gray);
+        }
+
+        /* Page Content */
+        .content {
+            padding: 40px;
+            flex: 1;
+        }
+        
+        /* Premium Banner */
+        .banner-card {
+            background: linear-gradient(135deg, #4CAF50, #81C784);
+            border-radius: 20px;
+            padding: 30px;
+            color: white;
+            margin-bottom: 30px;
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            box-shadow: 0 10px 20px rgba(76, 175, 80, 0.2);
+        }
+        .banner-icon {
+            width: 45px;
+            height: 45px;
+            background: rgba(255,255,255,0.2);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 18px;
+        }
+        .banner-text h1 {
+            font-size: 26px;
+            margin: 0;
+            font-weight: 800;
+        }
+        .banner-text p {
+            font-size: 14px;
+            opacity: 0.9;
+            margin: 5px 0 0 0;
+        }
+
+        /* Breakdown Section */
+        .breakdown-card {
+            background: white;
+            border-radius: 24px;
+            padding: 25px;
+            margin-bottom: 30px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.03);
+        }
+        .section-label {
+            font-size: 16px;
+            font-weight: 800;
+            color: var(--text-dark);
+            margin-bottom: 20px;
+            display: block;
+        }
+        .stats-row {
+            display: flex;
+            gap: 15px;
+            overflow-x: auto;
+            padding-bottom: 5px;
+        }
+        .stat-item {
+            background: #F8FAFC;
+            border-radius: 20px;
+            padding: 15px;
+            min-width: 120px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+            gap: 8px;
+        }
+        .stat-img {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            object-fit: cover;
+        }
+        .stat-count {
+            font-size: 18px;
+            font-weight: 800;
+            color: #2E7D32;
+        }
+        .stat-label {
+            font-size: 11px;
+            font-weight: 700;
+            color: var(--text-gray);
+        }
+
+        /* Action Buttons */
+        .add-btn {
+            background: linear-gradient(135deg, #4CAF50, #81C784);
+            color: white;
+            border: none;
+            border-radius: 12px;
+            padding: 16px;
+            font-size: 16px;
+            font-weight: 800;
+            width: 100%;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            margin-bottom: 30px;
+            box-shadow: 0 4px 15px rgba(76, 175, 80, 0.3);
+            transition: transform 0.2s;
+        }
+        .add-btn:hover { transform: translateY(-2px); }
+
+        /* Animal List */
+        .animal-list {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+        .animal-card {
+            background: white;
+            border-radius: 20px;
+            padding: 20px;
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.02);
+            border: 1px solid transparent;
+            transition: all 0.2s;
+        }
+        .animal-card:hover {
+            border-color: #E2E8F0;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+        }
+        .animal-pic {
+            width: 65px;
+            height: 65px;
+            border-radius: 50%;
+            object-fit: cover;
+            background: #F1F5F9;
+        }
+        .animal-details {
+            flex-grow: 1;
+        }
+        .card-header-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 5px;
+        }
+        .animal-title {
+            font-size: 16px;
+            font-weight: 800;
+            color: var(--text-dark);
+            margin: 0;
+        }
+        .status-tag {
+            padding: 4px 10px;
+            border-radius: 12px;
+            font-size: 10px;
+            font-weight: 800;
+        }
+        .healthy { background: #E8F5E9; color: #2E7D32; }
+        .withdrawal { background: #FFF1F2; color: #E11D48; }
+
+        .animal-sub-info {
+            font-size: 12px;
+            color: var(--text-gray);
+            margin-bottom: 12px;
+        }
+
+        .animal-specs {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 20px;
+        }
+        .spec-item { display: flex; flex-direction: column; }
+        .spec-label {
+            font-size: 10px;
+            color: var(--text-gray);
+            font-weight: 600;
+        }
+        .spec-value {
+            font-size: 13px;
+            font-weight: 800;
+            color: var(--text-dark);
+        }
+
+        /* Logout Modal */
+        .modal-overlay { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(0, 0, 0, 0.4); backdrop-filter: blur(4px); display: none; align-items: center; justify-content: center; z-index: 1000; animation: fadeIn 0.2s ease-out; }
+        .modal-card { background: white; border-radius: 24px; padding: 40px; width: 380px; text-align: center; box-shadow: 0 20px 40px rgba(0,0,0,0.1); transform: scale(0.9); transition: transform 0.2s ease-out; }
+        .modal-overlay.active { display: flex; }
+        .modal-overlay.active .modal-card { transform: scale(1); }
+        .modal-icon { width: 70px; height: 70px; background: #FFF1F2; color: #E11D48; border-radius: 20px; display: flex; align-items: center; justify-content: center; font-size: 28px; margin: 0 auto 20px auto; }
+        .modal-title { font-size: 22px; font-weight: 800; margin-bottom: 10px; }
+        .modal-text { color: var(--text-gray); font-size: 14px; margin-bottom: 25px; line-height: 1.5; }
+        .modal-btns { display: flex; flex-direction: column; gap: 10px; }
+        .m-btn { padding: 14px; border-radius: 12px; font-weight: 700; cursor: pointer; text-decoration: none; transition: all 0.2s; border: none; }
+        .m-btn-logout { background: #E11D48; color: white; }
+        .m-btn-cancel { background: #F1F5F9; color: #475569; }
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+    </style>
+</head>
+<body>
+
+    <!-- Desktop Sidebar -->
+    <aside class="sidebar">
+        <div class="sidebar-brand">
+            <div class="sidebar-logo">
+                <img src="/assets/logo.png" alt="Logo" onerror="this.src='data:image/svg+xml;utf8,<svg xmlns=\'http://www.w3.org/2000/svg\' viewBox=\'0 0 100 100\'><circle cx=\'50\' cy=\'50\' r=\'45\' fill=\'%23e0e0e0\'/><text x=\'50\' y=\'55\' font-family=\'sans-serif\' font-weight=\'bold\' font-size=\'30\' text-anchor=\'middle\' fill=\'%23888\'>RS</text></svg>';">
+            </div>
+            <h2 class="sidebar-title">ResidueSafe</h2>
+        </div>
+        <nav class="sidebar-nav">
+            <a href="/farmer_dashboard" class="nav-link"><i class="fas fa-home"></i> Dashboard</a>
+            <a href="/add_treatment" class="nav-link"><i class="fas fa-syringe"></i> Treatments</a>
+            <a href="/withdrawal_status" class="nav-link"><i class="fas fa-stopwatch"></i> Withdrawal Status</a>
+            <a href="/add_animals" class="nav-link active"><i class="fas fa-paw"></i> Add Animals</a>
+            <a href="/treatment_history" class="nav-link"><i class="fas fa-history"></i> History & Reports</a>
+            <a href="#" class="nav-link" style="margin-top:auto;" onclick="showLogoutModal()"><i class="fas fa-sign-out-alt"></i> Logout</a>
+        </nav>
+    </aside>
+
+    <div class="main-wrapper">
+        <!-- Desktop Header -->
+        <header class="top-header">
+            <div class="header-profile-area">
+                <a href="/profile_settings" class="profile-btn" style="text-decoration: none; color: inherit;">
+                    <div class="profile-avatar">U</div>
+                    <div class="profile-info">
+                        <span class="profile-name">User Account</span>
+                        <span class="profile-role">Farmer Portal</span>
+                        <span class="profile-farm" style="font-size: 11px; opacity: 0.8; font-weight: 500;">Green Pastures Farm</span>
+                    </div>
+                </a>
+            </div>
+        </header>
+
+        <div class="content">
+            <!-- Banner -->
+            <div class="banner-card">
+                <div class="banner-icon"><i class="fas fa-paw"></i></div>
+                <div class="banner-text">
+                    <h1>All Animals</h1>
+                    <p>06 animals registered in your farm</p>
+                </div>
+            </div>
+
+            <!-- Breakdown -->
+            <div class="breakdown-card">
+                <span class="section-label">Animal Breakdown</span>
+                <div class="stats-row">
+                    <div class="stat-item">
+                        <img src="https://images.unsplash.com/photo-1570042225831-d98fa7577f1e?auto=format&fit=crop&q=80&w=200" class="stat-img">
+                        <span class="stat-count">2</span>
+                        <span class="stat-label">Cow</span>
+                    </div>
+                    <div class="stat-item">
+                        <img src="https://images.unsplash.com/photo-1548550023-2bdb3c5beed7?auto=format&fit=crop&q=80&w=200" class="stat-img">
+                        <span class="stat-count">3</span>
+                        <span class="stat-label">Hen</span>
+                    </div>
+                    <div class="stat-item">
+                        <img src="https://images.unsplash.com/photo-1551892305-6490ba826857?auto=format&fit=crop&q=80&w=200" class="stat-img">
+                        <span class="stat-count">1</span>
+                        <span class="stat-label">Buffalo</span>
+                    </div>
+                </div>
+            </div>
+
+            <button class="add-btn" onclick="window.location.href='/add_new_animal'">
+                <i class="fas fa-plus"></i> Add New Animal
+            </button>
+
+            <!-- Animal List -->
+            <div class="animal-list">
+                
+                <!-- Animal 1 -->
+                <div class="animal-card">
+                    <img src="https://images.unsplash.com/photo-1570042225831-d98fa7577f1e?auto=format&fit=crop&q=80&w=200" class="animal-pic">
+                    <div class="animal-details">
+                        <div class="card-header-row">
+                            <h3 class="animal-title">TAG-10492 - Jersey Girl</h3>
+                            <span class="status-tag withdrawal">Withdrawal</span>
+                        </div>
+                        <p class="animal-sub-info">Jersey • 4 years</p>
+                        <div class="animal-specs">
+                            <div class="spec-item">
+                                <span class="spec-label">Species</span>
+                                <span class="spec-value">Cow</span>
+                            </div>
+                            <div class="spec-item">
+                                <span class="spec-label">Weight</span>
+                                <span class="spec-value">450 kg</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Animal 2 -->
+                <div class="animal-card">
+                    <img src="https://images.unsplash.com/photo-1548550023-2bdb3c5beed7?auto=format&fit=crop&q=80&w=200" class="animal-pic">
+                    <div class="animal-details">
+                        <div class="card-header-row">
+                            <h3 class="animal-title">HEN-092 - Goldie</h3>
+                            <span class="status-tag healthy">Healthy</span>
+                        </div>
+                        <p class="animal-sub-info">Rhode Island Red • 1 year</p>
+                        <div class="animal-specs">
+                            <div class="spec-item">
+                                <span class="spec-label">Species</span>
+                                <span class="spec-value">Hen</span>
+                            </div>
+                            <div class="spec-item">
+                                <span class="spec-label">Weight</span>
+                                <span class="spec-value">2.5 kg</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Animal 3 -->
+                <div class="animal-card">
+                    <img src="https://images.unsplash.com/photo-1551892305-6490ba826857?auto=format&fit=crop&q=80&w=200" class="animal-pic">
+                    <div class="animal-details">
+                        <div class="card-header-row">
+                            <h3 class="animal-title">BUFF-22 - Big Sam</h3>
+                            <span class="status-tag healthy">Healthy</span>
+                        </div>
+                        <p class="animal-sub-info">Murrah • 5 years</p>
+                        <div class="animal-specs">
+                            <div class="spec-item">
+                                <span class="spec-label">Species</span>
+                                <span class="spec-value">Buffalo</span>
+                            </div>
+                            <div class="spec-item">
+                                <span class="spec-label">Weight</span>
+                                <span class="spec-value">600 kg</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+    <!-- Logout Modal Overlay -->
+    <div class="modal-overlay" id="logoutModal">
+        <div class="modal-card">
+            <div class="modal-icon"><i class="fas fa-sign-out-alt"></i></div>
+            <div class="modal-title">Log Out?</div>
+            <p class="modal-text">Are you sure you want to log out of ResidueSafe? You will need to sign in again to access your farm data.</p>
+            <div class="modal-btns">
+                <button class="m-btn m-btn-logout" onclick="handleLogout()">Yes, Log Out</button>
+                <button class="m-btn m-btn-cancel" onclick="hideLogoutModal()">Cancel</button>
+            </div>
+        </div>
+    </div>
+    <script>
+        document.addEventListener('DOMContentLoaded', async () => {
+            const userData = localStorage.getItem('user');
+            if (!userData) {
+                window.location.href = '/login';
+                return;
+            }
+            const user = JSON.parse(userData);
+            
+            // Sync Profile Info
+            document.querySelector('.profile-name').textContent = user.full_name || 'Farmer';
+            document.querySelector('.profile-farm').textContent = user.farm_name || 'My Farm';
+            
+            try {
+                const response = await fetch(`http://127.0.0.1:5000/all-animals/${user.id}`);
+                const data = await response.json();
+                
+                if (data.status === "success") {
+                    renderAnimals(data.data);
+                }
+            } catch (err) {
+                console.error("Fetch Error:", err);
+            }
+        });
+
+        function renderAnimals(animals) {
+            const listContainer = document.querySelector('.animal-list');
+            const bannerText = document.querySelector('.banner-text p');
+            const statsRow = document.querySelector('.stats-row');
+            
+            bannerText.textContent = `${animals.length.toString().padStart(2, '0')} animals registered in your farm`;
+            
+            const breakdown = {};
+            animals.forEach(a => {
+                const sp = a.species || 'Unknown';
+                breakdown[sp] = (breakdown[sp] || 0) + 1;
+            });
+            
+            statsRow.innerHTML = '';
+            const speciesImages = {
+                'cow': 'https://images.unsplash.com/photo-1570042225831-d98fa7577f1e?auto=format&fit=crop&q=80&w=200',
+                'hen': 'https://images.unsplash.com/photo-1548550023-2bdb3c5beed7?auto=format&fit=crop&q=80&w=200',
+                'buffalo': 'https://images.unsplash.com/photo-1589923158776-cb4485d99fd6?auto=format&fit=crop&q=80&w=200',
+                'sheep': 'https://images.unsplash.com/photo-1484557985045-edf25e08da73?auto=format&fit=crop&q=80&w=200',
+                'pig': 'https://images.unsplash.com/photo-1516467508483-a7212febe31a?auto=format&fit=crop&q=80&w=200',
+                'goat': 'https://images.unsplash.com/photo-1524024973431-2ad916746881?auto=format&fit=crop&q=80&w=200'
+            };
+
+            const getImg = (sp) => speciesImages[(sp || '').toLowerCase()] || 'https://via.placeholder.com/200?text=' + sp;
+            
+            Object.keys(breakdown).forEach(species => {
+                const statItem = `
+                    <div class="stat-item">
+                        <img src="${getImg(species)}" class="stat-img">
+                        <span class="stat-count">${breakdown[species]}</span>
+                        <span class="stat-label">${species}</span>
+                    </div>
+                `;
+                statsRow.innerHTML += statItem;
+            });
+
+            listContainer.innerHTML = '';
+            animals.forEach(animal => {
+                const age = calculateAge(animal.dob);
+                const card = `
+                    <div class="animal-card">
+                        <img src="${getImg(animal.species)}" class="animal-pic">
+                        <div class="animal-details">
+                            <div class="card-header-row">
+                                <h3 class="animal-title">${animal.tag_id} - ${animal.animal_name || 'No Name'}</h3>
+                                <span class="status-tag healthy">Healthy</span>
+                            </div>
+                            <p class="animal-sub-info">${animal.breed || 'N/A'} • ${age}</p>
+                            <div class="animal-specs">
+                                <div class="spec-item">
+                                    <span class="spec-label">Species</span>
+                                    <span class="spec-value">${animal.species}</span>
+                                </div>
+                                <div class="spec-item">
+                                    <span class="spec-label">Weight</span>
+                                    <span class="spec-value">${animal.weight_kg} kg</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                `;
+                listContainer.innerHTML += card;
+            });
+        }
+
+        function calculateAge(dobStr) {
+            if (!dobStr) return 'Age Unknown';
+            try {
+                // dobStr is "dd/mm/yyyy"
+                const parts = dobStr.split('/');
+                const dob = new Date(parts[2], parts[1] - 1, parts[0]);
+                const today = new Date();
+                
+                let years = today.getFullYear() - dob.getFullYear();
+                const months = today.getMonth() - dob.getMonth();
+                
+                if (months < 0 || (months === 0 && today.getDate() < dob.getDate())) {
+                    years--;
+                }
+                
+                return `${years} Years`;
+            } catch (e) {
+                return 'N/A';
+            }
+        }
+
+        function showLogoutModal() { document.getElementById('logoutModal').classList.add('active'); }
+        function hideLogoutModal() { document.getElementById('logoutModal').classList.remove('active'); }
+        function handleLogout() { localStorage.clear(); window.location.href = '/index'; }
+    </script>
+</body>
+</html>

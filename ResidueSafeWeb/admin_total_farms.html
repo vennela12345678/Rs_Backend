@@ -1,0 +1,327 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Total Farms - Admin - ResidueSafe Portal</title>
+    <link rel="stylesheet" href="/style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --sidebar-width: 260px;
+            --admin-blue-deep: #1A365D;
+            --admin-blue-light: #2B7FFF;
+            --admin-bg-light: #F8FAFC;
+        }
+        body, html {
+            height: 100vh;
+            margin: 0;
+            font-family: 'Inter', sans-serif;
+            background-color: #F4F7F6;
+            overflow: hidden;
+        }
+        .app-container {
+            display: flex;
+            width: 100%;
+            height: 100vh;
+        }
+        .app-container {
+            display: flex;
+            width: 100%;
+            min-height: 100vh;
+        }
+        .sidebar {
+            width: 240px;
+            background: var(--admin-blue-deep);
+            color: white;
+            display: flex;
+            flex-direction: column;
+            position: fixed;
+            top: 0;
+            left: 0;
+            height: 100vh;
+            box-shadow: 2px 0 10px rgba(0,0,0,0.05);
+            z-index: 1001;
+        }
+        .sidebar-header {
+            padding: 30px 25px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            border-bottom: 1px solid rgba(255,255,255,0.05);
+        }
+        .sidebar-logo { width: 32px; height: 32px; }
+        .sidebar-title { font-size: 1.25rem; font-weight: 800; letter-spacing: -0.5px; }
+        .sidebar-nav {
+            flex: 1;
+            padding: 30px 15px;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+        .nav-link {
+            display: flex; align-items: center; gap: 15px; padding: 14px 20px;
+            color: rgba(255,255,255,0.7); text-decoration: none; border-radius: 12px;
+            font-weight: 500; transition: all 0.3s;
+        }
+        .nav-link:hover, .nav-link.active { background: rgba(255,255,255,0.1); color: white; }
+        .nav-link.active { background: var(--admin-blue-light); box-shadow: 0 4px 15px rgba(43, 127, 255, 0.3); }
+
+        /* Main Content area */
+        .main-content { 
+            margin-left: 240px; 
+            flex: 1; 
+            display: flex; 
+            flex-direction: column; 
+            height: 100vh; 
+            overflow-y: auto; 
+            background-color: #F4F7F6; 
+        }
+        .top-header {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            padding: 15px 40px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+            position: sticky;
+            top: 0;
+            z-index: 900;
+            width: 100%;
+            box-sizing: border-box;
+        }
+        .user-pill {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            background: #F8FAFC;
+            padding: 8px 15px;
+            border-radius: 50px;
+            border: 1px solid #EDF2F7;
+        }
+        .user-info-text { text-align: right; }
+        .user-name { font-weight: 800; color: #1A202C; display: block; font-size: 0.9rem; }
+        .user-role { font-size: 0.75rem; color: #718096; display: block; }
+        .user-avatar { width: 35px; height: 35px; background: var(--admin-blue-light); border-radius: 50%; display: flex; align-items: center; justify-content: center; color: white; font-weight: 800; }
+        
+        .breadcrumb { display: flex; align-items: center; gap: 10px; color: #718096; font-size: 0.8rem; font-weight: 500; }
+
+        .farms-body { padding: 25px 40px; flex: 1; width: 100%; }
+        .page-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 25px; width: 100%; }
+        .page-title-group h1 { font-size: 1.75rem; font-weight: 800; color: #1A202C; margin-bottom: 5px; text-align: left; }
+        .page-title-group p { color: #718096; font-size: 0.95rem; text-align: left; }
+
+        .search-container {
+            background: white; border-radius: 16px; padding: 10px; display: flex; align-items: center;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.03); margin-bottom: 40px;
+            width: 100%; max-width: 600px;
+        }
+        .search-icon { padding: 0 20px; color: #718096; }
+        .search-input { border: none; flex: 1; padding: 15px 10px; font-size: 1rem; outline: none; }
+
+        .farms-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+            gap: 25px;
+            width: 100%;
+        }
+        .farm-card {
+            background: white; border-radius: 20px; padding: 30px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.02); transition: all 0.3s;
+            border: 1px solid #EDF2F7; display: flex; flex-direction: column; gap: 20px;
+            text-decoration: none;
+        }
+        .farm-card:hover { transform: translateY(-3px); border-color: var(--admin-blue-light); box-shadow: 0 8px 25px rgba(43, 127, 255, 0.1); }
+        
+        .card-header { display: flex; justify-content: space-between; align-items: flex-start; }
+        .farm-initial {
+            width: 55px; height: 55px; background: #EBF8FF; color: var(--admin-blue-light);
+            border-radius: 16px; display: flex; align-items: center; justify-content: center; font-weight: 800; font-size: 1.4rem;
+        }
+        .status-badge {
+            background: #E6F4EA; color: #22C55E; padding: 6px 14px; border-radius: 10px; font-weight: 700; font-size: 0.8rem;
+        }
+        
+        .farm-name { font-size: 1.25rem; font-weight: 800; color: #1A202C; margin: 0; }
+        .meta-row { display: flex; align-items: center; gap: 10px; font-size: 0.9rem; color: #718096; }
+        .meta-icon { width: 16px; text-align: center; }
+
+        .pop-badge { background: #EBF4FF; color: #3B82F6; padding: 10px 15px; border-radius: 12px; font-weight: 800; font-size: 0.9rem; display: inline-block; margin-top: 10px;}
+
+        .action-footer { margin-top: auto; padding-top: 20px; border-top: 1px solid #F7FAFC; display: flex; justify-content: flex-end; }
+        .view-btn { color: var(--admin-blue-light); font-weight: 700; font-size: 0.9rem; display: flex; align-items: center; gap: 8px;}
+    </style>
+</head>
+<body>
+    <div class="app-container">
+    <aside class="sidebar">
+        <div class="sidebar-header">
+            <span class="sidebar-title">ResidueSafe</span>
+        </div>
+        <nav class="sidebar-nav">
+            <a href="/admin_dashboard" class="nav-link">
+                <i class="fas fa-th-large"></i> <span>Dashboard</span>
+            </a>
+            <a href="/admin_total_farms" class="nav-link active">
+                <i class="fas fa-building"></i> <span>Registered Farms</span>
+            </a>
+            <a href="/admin_drugs" class="nav-link">
+                <i class="fas fa-pills"></i> <span>Drug Registry</span>
+            </a>
+            <a href="/admin_profile" class="nav-link">
+                <i class="fas fa-user-circle"></i> <span>Admin Profile</span>
+            </a>
+        </nav>
+    </aside>
+
+    <main class="main-content">
+        <header class="top-header">
+            <div class="breadcrumb"><i class="fas fa-home"></i> / Operations / Total Farms</div>
+            <div class="user-pill">
+                <div class="user-info-text">
+                    <span class="user-name">Administrator</span>
+                    <span class="user-role">Root Access</span>
+                </div>
+                <div class="user-avatar">A</div>
+            </div>
+        </header>
+
+        <div class="farms-body">
+            <div class="page-header">
+                <div class="page-title-group">
+                    <h1>Registered Farms Directory</h1>
+                    <p>Comprehensive list of all farming operations registered within the compliance network.</p>
+                </div>
+            </div>
+
+            <div class="search-container">
+                <i class="fas fa-search search-icon"></i>
+                <input type="text" class="search-input" placeholder="Search by farm name, owner, or ID ...">
+            </div>
+
+            <div class="farms-grid">
+                <!-- Farm Card 1 -->
+                <a href="/admin_farm_details" class="farm-card">
+                    <div class="card-header">
+                        <div class="farm-initial">G</div>
+                        <span class="status-badge">Verified Active</span>
+                    </div>
+                    <div>
+                        <h3 class="farm-name">Green Valley Dairy</h3>
+                        <div class="meta-row"><i class="fas fa-user meta-icon"></i> <span>John Doe (Primary Owner)</span></div>
+                        <div class="meta-row"><i class="fas fa-map-marker-alt meta-icon"></i> <span>North Region • #FV-001</span></div>
+                        <div class="pop-badge">42 Registered Animals</div>
+                    </div>
+                    <div class="action-footer">
+                        <span class="view-btn">Inspect Details <i class="fas fa-chevron-right"></i></span>
+                    </div>
+                </a>
+
+                <!-- Farm Card 2 -->
+                <a href="#" class="farm-card">
+                    <div class="card-header">
+                        <div class="farm-initial" style="background: #F0F9FF;">S</div>
+                        <span class="status-badge">Verified Active</span>
+                    </div>
+                    <div>
+                        <h3 class="farm-name">Sunrise Poultry</h3>
+                        <div class="meta-row"><i class="fas fa-user meta-icon"></i> <span>Sarah Smith</span></div>
+                        <div class="meta-row"><i class="fas fa-map-marker-alt meta-icon"></i> <span>East District • #FV-082</span></div>
+                        <div class="pop-badge">120 Registered Animals</div>
+                    </div>
+                    <div class="action-footer">
+                        <span class="view-btn">Inspect Details <i class="fas fa-chevron-right"></i></span>
+                    </div>
+                </a>
+
+                <!-- Farm Card 3 -->
+                <a href="#" class="farm-card">
+                    <div class="card-header">
+                        <div class="farm-initial" style="background: #FEF3F3;">M</div>
+                        <span class="status-badge">Verified Active</span>
+                    </div>
+                    <div>
+                        <h3 class="farm-name">Mountain Sheep Farm</h3>
+                        <div class="meta-row"><i class="fas fa-user meta-icon"></i> <span>Robert Wilson</span></div>
+                        <div class="meta-row"><i class="fas fa-map-marker-alt meta-icon"></i> <span>Western Highlands • #FV-145</span></div>
+                        <div class="pop-badge">85 Registered Animals</div>
+                    </div>
+                    <div class="action-footer">
+                        <span class="view-btn">Inspect Details <i class="fas fa-chevron-right"></i></span>
+                    </div>
+                </a>
+            </div>
+        </div>
+    </main>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const adminData = localStorage.getItem('adminUser');
+            if (!adminData) {
+                window.location.href = '/admin_login';
+                return;
+            }
+            fetchFarms();
+
+            // Search logic
+            const searchInput = document.querySelector('.search-input');
+            let timeout = null;
+            searchInput.addEventListener('input', (e) => {
+                clearTimeout(timeout);
+                timeout = setTimeout(() => {
+                    fetchFarms(e.target.value);
+                }, 300);
+            });
+        });
+
+        async function fetchFarms(search = '') {
+            try {
+                const url = search ? `http://127.0.0.1:5000/admin/all-farms?search=${encodeURIComponent(search)}` : 'http://127.0.0.1:5000/admin/all-farms';
+                const response = await fetch(url);
+                const data = await response.json();
+                if (data.status === 'success') renderFarms(data.data);
+            } catch (err) {
+                console.error("Farm Fetch Error:", err);
+            }
+        }
+
+        function renderFarms(farms) {
+            const grid = document.querySelector('.farms-grid');
+            grid.innerHTML = '';
+            
+            if (farms.length === 0) {
+                grid.innerHTML = '<div style="grid-column: 1/-1; text-align: center; padding: 50px; color: #718096;">No farms found matching your criteria.</div>';
+                return;
+            }
+
+            farms.forEach((farm, idx) => {
+                const initial = farm.name.charAt(0).toUpperCase();
+                const colors = ['#EBF8FF', '#F0FDF4', '#FEF3F3', '#FFFBEB', '#F5F3FF'];
+                const card = `
+                    <div class="farm-card">
+                        <div class="card-header">
+                            <div class="farm-initial" style="background: ${colors[idx % 5]};">${initial}</div>
+                            <span class="status-badge">Verified Active</span>
+                        </div>
+                        <div>
+                            <h3 class="farm-name">${farm.name}</h3>
+                            <div class="meta-row"><i class="fas fa-user meta-icon"></i> <span>${farm.owner} (Primary Owner)</span></div>
+                            <div class="meta-row"><i class="fas fa-map-marker-alt meta-icon"></i> <span>${farm.region} • #FV-${1000 + idx}</span></div>
+                            <div class="pop-badge">${farm.animals}</div>
+                        </div>
+                        <div class="action-footer">
+                            <span class="view-btn">Inspect Details <i class="fas fa-chevron-right"></i></span>
+                        </div>
+                    </div>
+                `;
+                grid.innerHTML += card;
+            });
+        }
+    </script>
+</body>
+</html>

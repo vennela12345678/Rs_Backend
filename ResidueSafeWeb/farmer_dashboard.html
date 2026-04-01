@@ -1,0 +1,657 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Farmer Dashboard - ResidueSafe Web</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --sidebar-width: 280px;
+            --bg-color: #F4F7FE;
+            --text-dark: #1A202C;
+            --text-gray: #718096;
+            --primary-green: #4CAF50;
+            --white: #FFFFFF;
+        }
+        html, body {
+            margin: 0;
+            padding: 0;
+            height: 100%;
+            width: 100%;
+            overflow: hidden; /* Prevent double scrollbars */
+        }
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-dark);
+            display: grid;
+            grid-template-columns: var(--sidebar-width) 1fr;
+            grid-template-rows: auto 1fr;
+        }
+        
+        /* Premium Side Navigation for Web */
+        .sidebar {
+            grid-row: 1 / 3;
+            background: linear-gradient(180deg, #102814 0%, #1c4722 100%);
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            color: white;
+            box-shadow: 4px 0 15px rgba(0,0,0,0.05);
+            z-index: 10;
+        }
+        .sidebar-brand {
+            padding: 30px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+        }
+        .sidebar-logo {
+            width: 45px;
+            height: 45px;
+            background: white;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .sidebar-logo img {
+            width: 32px;
+            height: 32px;
+            border-radius: 8px;
+        }
+        .sidebar-title {
+            font-size: 22px;
+            font-weight: 800;
+            margin: 0;
+            letter-spacing: -0.5px;
+        }
+        .sidebar-nav {
+            padding: 30px 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            flex-grow: 1;
+        }
+        .nav-link {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            padding: 16px 20px;
+            border-radius: 12px;
+            color: rgba(255,255,255,0.7);
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 15px;
+            transition: all 0.3s ease;
+        }
+        .nav-link:hover {
+            background: rgba(255,255,255,0.1);
+            color: white;
+        }
+        .nav-link.active {
+            background: var(--primary-green);
+            color: white;
+            box-shadow: 0 4px 15px rgba(76, 175, 80, 0.4);
+        }
+        
+        /* Main Website Dashboard Content Layout */
+        .main-wrapper {
+            grid-column: 2;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            overflow-y: auto;
+            background-color: var(--bg-color);
+            width: 100%;
+        }
+        
+        /* Top Navigation Header */
+        .top-header {
+            height: 90px;
+            background: white;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 40px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.02);
+            position: sticky;
+            top: 0;
+            z-index: 5;
+        }
+        .header-search {
+            background: #F4F7FE;
+            border-radius: 30px;
+            padding: 12px 25px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            width: 300px;
+        }
+        .header-search input {
+            border: none;
+            background: transparent;
+            outline: none;
+            width: 100%;
+            font-size: 14px;
+            color: var(--text-dark);
+        }
+        .header-profile-area {
+            display: flex;
+            align-items: center;
+            gap: 25px;
+        }
+        .icon-btn {
+            color: var(--text-gray);
+            font-size: 20px;
+            cursor: pointer;
+            position: relative;
+        }
+        .notification-dot {
+            position: absolute;
+            top: -2px;
+            right: -2px;
+            background: #ff6b6b;
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            border: 2px solid white;
+        }
+        .profile-btn {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            cursor: pointer;
+            text-decoration: none;
+            color: inherit;
+        }
+        .profile-avatar {
+            width: 50px;
+            height: 50px;
+            background: linear-gradient(135deg, #4CAF50, #81C784);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: 700;
+            font-size: 20px;
+            box-shadow: 0 4px 10px rgba(76,175,80,0.3);
+        }
+        .profile-info {
+            display: flex;
+            flex-direction: column;
+        }
+        .profile-name {
+            font-weight: 700;
+            font-size: 16px;
+        }
+        .profile-role {
+            font-size: 13px;
+            color: var(--text-gray);
+        }
+
+        /* Web Content Container */
+        .content {
+            padding: 40px;
+            flex: 1;
+        }
+
+        /* Web Welcome Banner */
+        .welcome-banner {
+            background: linear-gradient(135deg, #4CAF50 0%, #2e7d32 100%);
+            border-radius: 20px;
+            padding: 40px;
+            color: white;
+            margin-bottom: 40px;
+            box-shadow: 0 10px 25px rgba(46, 125, 50, 0.2);
+            position: relative;
+            overflow: hidden;
+        }
+        .welcome-banner::after {
+            content: "\f00c"; /* Check mark icon bg */
+            font-family: 'Font Awesome 6 Free';
+            font-weight: 900;
+            position: absolute;
+            right: -20px;
+            top: -30px;
+            font-size: 200px;
+            color: rgba(255,255,255,0.05);
+            transform: rotate(-15deg);
+        }
+        .wb-title {
+            font-size: 32px;
+            font-weight: 800;
+            margin: 0 0 10px 0;
+            letter-spacing: -0.5px;
+        }
+        .wb-subtitle {
+            font-size: 16px;
+            color: rgba(255,255,255,0.9);
+            margin: 0;
+            max-width: 600px;
+            line-height: 1.5;
+        }
+
+        /* Desktop Grid - 4 Columns */
+        .action-cards-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 25px;
+            margin-bottom: 40px;
+        }
+        .web-action-card {
+            background: white;
+            border-radius: 20px;
+            padding: 30px 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.03);
+            text-decoration: none;
+            transition: all 0.3s;
+            border: 1px solid transparent;
+        }
+        .web-action-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.08);
+            border-color: #E2E8F0;
+        }
+        .wac-icon-container {
+            width: 70px;
+            height: 70px;
+            border-radius: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 20px;
+            font-size: 28px;
+        }
+        .wac-title {
+            font-size: 16px;
+            font-weight: 700;
+            color: var(--text-dark);
+            text-align: center;
+        }
+
+        /* Desktop Table Layout for Activity */
+        .recent-section {
+            background: white;
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.03);
+        }
+        .rs-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 25px;
+        }
+        .rs-title {
+            font-size: 20px;
+            font-weight: 800;
+            margin: 0;
+        }
+        .rs-viewall {
+            color: var(--primary-green);
+            font-weight: 700;
+            text-decoration: none;
+            font-size: 14px;
+        }
+        .web-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        .web-table th {
+            text-align: left;
+            padding: 15px 20px;
+            color: var(--text-gray);
+            font-size: 13px;
+            font-weight: 600;
+            text-transform: uppercase;
+            border-bottom: 2px solid #F1F5F9;
+        }
+        .web-table td {
+            padding: 20px;
+            border-bottom: 1px solid #F1F5F9;
+            vertical-align: middle;
+        }
+        .recent-row:hover {
+            background-color: #F8FAFC;
+        }
+        .tb-tag {
+            font-weight: 700;
+            color: var(--text-dark);
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+        .tag-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: #F1F5F9;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: var(--text-gray);
+        }
+        .tb-type {
+            color: var(--text-gray);
+            font-weight: 500;
+        }
+        .tb-date {
+            color: var(--text-gray);
+            font-size: 14px;
+        }
+        .status-pill {
+            display: inline-block;
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 700;
+        }
+        .pill-inprogress {
+            background-color: #FFF7ED;
+            color: #C2410C;
+        }
+        .pill-completed {
+            background-color: #F0FDF4;
+            color: #15803D;
+        }
+        /* Logout Modal */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background: rgba(0, 0, 0, 0.4);
+            backdrop-filter: blur(4px);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+            animation: fadeIn 0.2s ease-out;
+        }
+        .modal-card {
+            background: white;
+            border-radius: 24px;
+            padding: 40px;
+            width: 380px;
+            text-align: center;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            transform: scale(0.9);
+            transition: transform 0.2s ease-out;
+        }
+        .modal-overlay.active { display: flex; }
+        .modal-overlay.active .modal-card { transform: scale(1); }
+        .modal-icon {
+            width: 70px;
+            height: 70px;
+            background: #FFF1F2;
+            color: #E11D48;
+            border-radius: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 28px;
+            margin: 0 auto 20px auto;
+        }
+        .modal-title { font-size: 22px; font-weight: 800; margin-bottom: 10px; }
+        .modal-text { color: var(--text-gray); font-size: 14px; margin-bottom: 25px; line-height: 1.5; }
+        .modal-btns { display: flex; flex-direction: column; gap: 10px; }
+        .m-btn {
+            padding: 14px;
+            border-radius: 12px;
+            font-weight: 700;
+            cursor: pointer;
+            text-decoration: none;
+            transition: all 0.2s;
+            border: none;
+        }
+        .m-btn-logout { background: #E11D48; color: white; }
+        .m-btn-cancel { background: #F1F5F9; color: #475569; }
+        
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+
+    </style>
+</head>
+<body>
+
+    <!-- Desktop Sidebar -->
+    <aside class="sidebar">
+        <div class="sidebar-brand">
+            <div class="sidebar-logo">
+                <img src="/assets/logo.png" alt="Logo" onerror="this.src='data:image/svg+xml;utf8,<svg xmlns=\'http://www.w3.org/2000/svg\' viewBox=\'0 0 100 100\'><circle cx=\'50\' cy=\'50\' r=\'45\' fill=\'%23e0e0e0\'/><text x=\'50\' y=\'55\' font-family=\'sans-serif\' font-weight=\'bold\' font-size=\'30\' text-anchor=\'middle\' fill=\'%23888\'>RS</text></svg>';">
+            </div>
+            <h2 class="sidebar-title">ResidueSafe</h2>
+        </div>
+        <nav class="sidebar-nav">
+            <a href="/farmer_dashboard" class="nav-link active"><i class="fas fa-home"></i> Dashboard</a>
+            <a href="/add_treatment" class="nav-link"><i class="fas fa-syringe"></i> Treatments</a>
+            <a href="/withdrawal_status" class="nav-link"><i class="fas fa-stopwatch"></i> Withdrawal Status</a>
+            <a href="/add_animals" class="nav-link"><i class="fas fa-paw"></i> Add Animals</a>
+            <a href="/treatment_history" class="nav-link"><i class="fas fa-history"></i> History & Reports</a>
+            <a href="#" class="nav-link" style="margin-top:auto;" onclick="showLogoutModal()"><i class="fas fa-sign-out-alt"></i> Logout</a>
+        </nav>
+    </aside>
+
+    <div class="main-wrapper">
+        <!-- Desktop Header -->
+        <header class="top-header">
+            <div class="header-profile-area">
+                <a href="/profile_settings" class="profile-btn" style="text-decoration: none; color: inherit;">
+                    <div class="profile-avatar">U</div>
+                    <div class="profile-info">
+                        <span class="profile-name">User Account</span>
+                        <span class="profile-role">Farmer Portal</span>
+                        <span class="profile-farm" style="font-size: 11px; opacity: 0.8; font-weight: 500;">Green Pastures Farm</span>
+                    </div>
+                </a>
+            </div>
+        </header>
+
+        <!-- Main Desktop Content -->
+        <div class="content">
+            
+            <div class="welcome-banner">
+                <h1 class="wb-title">Welcome Back to ResidueSafe! 👋</h1>
+                <p class="wb-subtitle">Your desktop command center for monitoring livestock health, managing active treatments, and ensuring total compliance with withdrawal periods.</p>
+            </div>
+
+            <!-- Wide Action Grid -->
+            <div class="action-cards-grid">
+                <a href="/add_treatment" class="web-action-card">
+                    <div class="wac-icon-container" style="background-color: rgba(76, 175, 80, 0.1); color: #4CAF50;">
+                        <i class="fas fa-syringe"></i>
+                    </div>
+                    <span class="wac-title">Add<br>Treatment</span>
+                </a>
+                
+                <a href="/withdrawal_status" class="web-action-card">
+                    <div class="wac-icon-container" style="background-color: rgba(56, 142, 60, 0.1); color: #388E3C;">
+                        <i class="fas fa-stopwatch"></i>
+                    </div>
+                    <span class="wac-title">Withdrawal<br>Tracking</span>
+                </a>
+                
+                <a href="/alerts" class="web-action-card">
+                    <div class="wac-icon-container" style="background-color: rgba(255, 122, 0, 0.1); color: #FF7A00;">
+                        <i class="fas fa-exclamation-triangle"></i>
+                    </div>
+                    <span class="wac-title">Alerts &<br>Compliance</span>
+                </a>
+                
+                <a href="/add_animals" class="web-action-card">
+                    <div class="wac-icon-container" style="background-color: rgba(43, 127, 255, 0.1); color: #2B7FFF;">
+                        <i class="fas fa-paw"></i>
+                    </div>
+                    <span class="wac-title">Add<br>Animals</span>
+                </a>
+            </div>
+
+            <!-- Full Width Data Table -->
+            <div class="recent-section">
+                <div class="rs-header">
+                    <h3 class="rs-title">Recent Treatments</h3>
+                    <a href="/treatment_history" class="rs-viewall">View All Records <i class="fas fa-arrow-right" style="margin-left: 5px;"></i></a>
+                </div>
+                
+                <table class="web-table">
+                    <thead>
+                        <tr>
+                            <th>Animal Tag ID</th>
+                            <th>Medication Type</th>
+                            <th>Date Administered</th>
+                            <th>Status</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr class="recent-row">
+                            <td>
+                                <div class="tb-tag">
+                                    <div class="tag-icon"><i class="fas fa-cow"></i></div>
+                                    TAG-10492
+                                </div>
+                            </td>
+                            <td class="tb-type">Antibiotic (Penicillin)</td>
+                            <td class="tb-date">Today, 10:30 AM</td>
+                            <td><span class="status-pill pill-inprogress">In Progress</span></td>
+                        </tr>
+                        <tr class="recent-row">
+                            <td>
+                                <div class="tb-tag">
+                                    <div class="tag-icon"><i class="fas fa-sheep"></i></div>
+                                    TAG-09822
+                                </div>
+                            </td>
+                            <td class="tb-type">Vaccine Range A</td>
+                            <td class="tb-date">Yesterday, 2:15 PM</td>
+                            <td><span class="status-pill pill-completed">Completed</span></td>
+                        </tr>
+                        <tr class="recent-row">
+                            <td>
+                                <div class="tb-tag">
+                                    <div class="tag-icon"><i class="fas fa-cow"></i></div>
+                                    TAG-08112
+                                </div>
+                            </td>
+                            <td class="tb-type">Dewormer</td>
+                            <td class="tb-date">Oct 12, 08:00 AM</td>
+                            <td><span class="status-pill pill-completed">Completed</span></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            
+        </div>
+        <!-- Logout Modal Overlay -->
+    <div class="modal-overlay" id="logoutModal">
+        <div class="modal-card">
+            <div class="modal-icon"><i class="fas fa-sign-out-alt"></i></div>
+            <div class="modal-title">Log Out?</div>
+            <p class="modal-text">Are you sure you want to log out of ResidueSafe? You will need to sign in again to access your farm data.</p>
+            <div class="modal-btns">
+                <button class="m-btn m-btn-logout" onclick="handleLogout()">Yes, Log Out</button>
+                <button class="m-btn m-btn-cancel" onclick="hideLogoutModal()">Cancel</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', async () => {
+            const userData = localStorage.getItem('user');
+            if (!userData) {
+                window.location.href = '/login';
+                return;
+            }
+
+            const user = JSON.parse(userData);
+            
+            // Sync Header & Profile
+            const profileName = document.querySelector('.profile-name');
+            const profileFarm = document.querySelector('.profile-farm');
+            const bannerTitle = document.querySelector('.wb-title');
+
+            if (profileFarm) profileFarm.textContent = user.farm_name || 'Green Pastures Farm';
+            if (bannerTitle) bannerTitle.textContent = `Welcome Back, ${user.full_name || 'Farmer'}! 👋`;
+
+            // Fetch Dashboard Summary (Name + Recent Activity)
+            try {
+                const response = await fetch(`http://127.0.0.1:5000/dashboard-summary/${user.id}`);
+                const data = await response.json();
+                
+                if (data.status === "success") {
+                    const finalName = data.user_name || user.full_name || 'Farmer';
+                    if (profileName) profileName.textContent = finalName;
+                    if (bannerTitle) bannerTitle.textContent = `Welcome Back, ${finalName}! 👋`;
+                    renderRecentActivity(data.recent_activity);
+                }
+            } catch (err) {
+                console.error("Dashboard Summary Error:", err);
+                // Fallback for name if API fails
+                const fallbackName = user.full_name || 'Farmer';
+                if (profileName) profileName.textContent = fallbackName;
+                if (bannerTitle) bannerTitle.textContent = `Welcome Back, ${fallbackName}! 👋`;
+            }
+        });
+
+        function renderRecentActivity(records) {
+            const tbody = document.querySelector('.web-table tbody');
+            if (!tbody) return;
+            
+            tbody.innerHTML = '';
+
+            if (!records || records.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="4" style="text-align: center; padding: 30px; color: var(--text-gray);">No recent treatments recorded.</td></tr>';
+                return;
+            }
+
+            records.forEach(r => {
+                // Determine icon based on tag prefix or default to paw
+                let icon = 'fa-paw';
+                const tag = (r.animal_tag_id || '').toUpperCase();
+                if (tag.includes('COW')) icon = 'fa-cow';
+                else if (tag.includes('HEN')) icon = 'fa-egg';
+                else if (tag.includes('GOAT')) icon = 'fa-mountain';
+                
+                const row = `
+                    <tr class="recent-row">
+                        <td>
+                            <div class="tb-tag">
+                                <div class="tag-icon"><i class="fas ${icon}"></i></div>
+                                ${r.animal_tag_id}
+                            </div>
+                        </td>
+                        <td class="tb-type">${r.drug_name}</td>
+                        <td class="tb-date">${r.date}</td>
+                        <td><span class="status-pill pill-completed">Recorded</span></td>
+                    </tr>
+                `;
+                tbody.innerHTML += row;
+            });
+        }
+
+        function showLogoutModal() {
+            document.getElementById('logoutModal').classList.add('active');
+        }
+        function hideLogoutModal() {
+            document.getElementById('logoutModal').classList.remove('active');
+        }
+
+        function handleLogout() {
+            localStorage.clear();
+            sessionStorage.clear();
+            window.location.href = '/index';
+        }
+    </script>
+
+</body>
+</html>

@@ -1,0 +1,457 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Edit Profile - ResidueSafe</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #4CAF50;
+            --primary-light: #81C784;
+            --primary-dark: #388E3C;
+            --bg-gray: #F8FAFC;
+            --text-dark: #1A202C;
+            --text-gray: #718096;
+            --white: #ffffff;
+            --sidebar-width: 280px;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', sans-serif; }
+
+        body {
+            background-color: var(--bg-gray);
+            color: var(--text-dark);
+            height: 100vh;
+            display: grid;
+            grid-template-columns: var(--sidebar-width) 1fr;
+        }
+
+        /* Sidebar Styling (Matched with Dashboard) */
+        .sidebar {
+            background: linear-gradient(180deg, #102814 0%, #1c4722 100%);
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            color: white;
+            box-shadow: 4px 0 15px rgba(0,0,0,0.05);
+            z-index: 10;
+            position: sticky;
+            top: 0;
+        }
+
+        .sidebar-brand {
+            padding: 30px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+        }
+
+        .sidebar-logo {
+            width: 45px;
+            height: 45px;
+            background: white;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .sidebar-logo i {
+            color: #4CAF50;
+            font-size: 24px;
+        }
+
+        .sidebar-title {
+            font-size: 22px;
+            font-weight: 800;
+            margin: 0;
+            letter-spacing: -0.5px;
+            color: white;
+        }
+
+        .sidebar-nav {
+            padding: 30px 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            flex-grow: 1;
+        }
+
+        .nav-link {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            padding: 16px 20px;
+            border-radius: 12px;
+            color: rgba(255,255,255,0.7);
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 15px;
+            transition: all 0.3s ease;
+        }
+
+        .nav-link:hover {
+            background: rgba(255,255,255,0.1);
+            color: white;
+        }
+
+        .nav-link.active {
+            background: var(--primary);
+            color: white;
+            box-shadow: 0 4px 15px rgba(76, 175, 80, 0.4);
+        }
+
+        /* Main Content */
+        .main-content {
+            height: 100vh;
+            overflow-y: auto;
+            flex: 1;
+            background-color: var(--bg-gray);
+        }
+
+        .top-header {
+            height: 90px;
+            background: white;
+            display: flex;
+            justify-content: flex-end;
+            align-items: center;
+            padding: 0 40px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.02);
+            position: sticky;
+            top: 0;
+            z-index: 5;
+        }
+
+        .header-profile-area {
+            display: flex;
+            align-items: center;
+            gap: 25px;
+        }
+
+        .profile-btn {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            cursor: pointer;
+            text-decoration: none;
+            color: inherit;
+        }
+
+        .profile-avatar {
+            width: 50px;
+            height: 50px;
+            background: linear-gradient(135deg, #4CAF50, #81C784);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: 700;
+            font-size: 20px;
+            box-shadow: 0 4px 10px rgba(76,175,80,0.3);
+        }
+
+        .profile-info {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .profile-name {
+            font-weight: 700;
+            font-size: 16px;
+        }
+
+        .profile-role {
+            font-size: 13px;
+            color: var(--text-gray);
+        }
+
+        .content-body {
+            padding: 20px 60px;
+        }
+
+        .form-container {
+            width: 100%;
+            max-width: 900px;
+        }
+
+        .header {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            margin-bottom: 40px;
+        }
+
+        .back-btn {
+            width: 45px;
+            height: 45px;
+            background: white;
+            border: 1px solid #E2E8F0;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--text-dark);
+            text-decoration: none;
+            transition: all 0.2s;
+        }
+
+        .back-btn:hover { background: #F1F5F9; }
+
+        .title-group h1 {
+            font-size: 28px;
+            font-weight: 800;
+            letter-spacing: -1px;
+            margin-bottom: 4px;
+        }
+
+        .title-group p {
+            color: var(--text-gray);
+            font-weight: 500;
+            font-size: 14px;
+        }
+
+        .form-card {
+            background: white;
+            border-radius: 24px;
+            padding: 35px;
+            border: 1px solid #E2E8F0;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.02);
+            margin-bottom: 30px;
+        }
+
+        .section-title {
+            font-size: 13px;
+            font-weight: 800;
+            color: var(--text-gray);
+            letter-spacing: 1px;
+            margin-bottom: 25px;
+            text-transform: uppercase;
+        }
+
+        .input-group {
+            margin-bottom: 25px;
+        }
+
+        .input-group label {
+            display: block;
+            margin-bottom: 10px;
+            font-weight: 700;
+            font-size: 14px;
+            color: var(--text-dark);
+        }
+
+        .input-group input {
+            width: 100%;
+            padding: 14px 18px;
+            border: 1.5px solid #E2E8F0;
+            border-radius: 14px;
+            font-size: 15px;
+            font-weight: 500;
+            transition: all 0.2s;
+            background: #F8FAFC;
+        }
+
+        .input-group input:focus {
+            outline: none;
+            border-color: var(--primary);
+            background: white;
+            box-shadow: 0 0 0 4px rgba(76,175,80,0.08);
+        }
+
+        .save-btn {
+            width: 100%;
+            padding: 18px;
+            background: linear-gradient(135deg, var(--primary), var(--primary-light));
+            color: white;
+            border: none;
+            border-radius: 16px;
+            font-size: 16px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s;
+            box-shadow: 0 10px 20px rgba(76,175,80,0.2);
+        }
+
+        .save-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 15px 30px rgba(76,175,80,0.3);
+        }
+
+        /* Modal styling for logout (needed because it's in the sidebar) */
+        .modal-overlay { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(0, 0, 0, 0.4); backdrop-filter: blur(4px); display: none; align-items: center; justify-content: center; z-index: 1000; animation: fadeIn 0.2s ease-out; }
+        .modal-card { background: white; border-radius: 24px; padding: 40px; width: 380px; text-align: center; box-shadow: 0 20px 40px rgba(0,0,0,0.1); transform: scale(0.9); transition: transform 0.2s ease-out; }
+        .modal-overlay.active { display: flex; }
+        .modal-overlay.active .modal-card { transform: scale(1); }
+        .modal-icon { width: 70px; height: 70px; background: #FFF1F2; color: #E11D48; border-radius: 20px; display: flex; align-items: center; justify-content: center; font-size: 28px; margin: 0 auto 20px auto; }
+        .modal-title { font-size: 22px; font-weight: 800; margin-bottom: 10px; }
+        .modal-text { color: var(--text-gray); font-size: 14px; margin-bottom: 25px; line-height: 1.5; }
+        .modal-btns { display: flex; flex-direction: column; gap: 10px; }
+        .m-btn { padding: 14px; border-radius: 12px; font-weight: 700; cursor: pointer; text-decoration: none; transition: all 0.2s; border: none; }
+        .m-btn-logout { background: #E11D48; color: white; }
+        .m-btn-cancel { background: #F1F5F9; color: #475569; }
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+
+    </style>
+</head>
+<body>
+
+    <aside class="sidebar">
+        <div class="sidebar-brand">
+            <div class="sidebar-logo">
+                <i class="fas fa-shield-alt"></i>
+            </div>
+            <h1 class="sidebar-title">ResidueSafe</h1>
+        </div>
+        <nav class="sidebar-nav">
+            <a href="/farmer_dashboard" class="nav-link"><i class="fas fa-th-large"></i> Dashboard</a>
+            <a href="/add_treatment" class="nav-link"><i class="fas fa-plus-circle"></i> Add Treatment</a>
+            <a href="/withdrawal_status" class="nav-link"><i class="fas fa-stopwatch"></i> Withdrawal Status</a>
+            <a href="/add_animals" class="nav-link"><i class="fas fa-paw"></i> Add Animals</a>
+            <a href="/treatment_history" class="nav-link"><i class="fas fa-history"></i> History & Reports</a>
+            <a href="#" class="nav-link" style="margin-top:auto;" onclick="showLogoutModal()"><i class="fas fa-sign-out-alt"></i> Logout</a>
+        </nav>
+    </aside>
+
+    <main class="main-content">
+        <div class="content-body">
+            <div class="form-container">
+                <div class="header">
+                    <a href="/profile_settings" class="back-btn"><i class="fas fa-arrow-left"></i></a>
+                    <div class="title-group">
+                        <h1>Edit Profile</h1>
+                        <p>Keep your information accurate and up to date</p>
+                    </div>
+                </div>
+
+            <form>
+                <div class="form-card">
+                    <div class="section-title">Personal Information</div>
+                    <div class="input-group">
+                        <label>Full Name</label>
+                        <input type="text" id="full_name" placeholder="Enter your full name">
+                    </div>
+                    <div class="input-group">
+                        <label>Email Address</label>
+                        <input type="email" id="email" placeholder="yourname@example.com">
+                    </div>
+                    <div class="input-group">
+                        <label>Phone Number (Optional)</label>
+                        <input type="tel" id="phone_number" placeholder="+91 98765 43210">
+                    </div>
+                </div>
+
+                <div class="form-card">
+                    <div class="section-title">Farm Information</div>
+                    <div class="input-group">
+                        <label>Farm Name</label>
+                        <input type="text" id="farm_name" placeholder="e.g. Green Valley Farms">
+                    </div>
+                </div>
+
+                <button type="submit" class="save-btn" onclick="handleProfileUpdate(event)">
+                    Save Changes
+                </button>
+            </form>
+        </div>
+    </main>
+
+    <!-- Logout Modal Overlay -->
+    <div class="modal-overlay" id="logoutModal">
+        <div class="modal-card">
+            <div class="modal-icon"><i class="fas fa-sign-out-alt"></i></div>
+            <div class="modal-title">Log Out?</div>
+            <p class="modal-text">Are you sure you want to log out of ResidueSafe? You will need to sign in again to access your farm data.</p>
+            <div class="modal-btns">
+                <a href="/index" class="m-btn m-btn-logout">Yes, Log Out</a>
+                <button class="m-btn m-btn-cancel" onclick="hideLogoutModal()">Cancel</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const userData = localStorage.getItem('user');
+            if (!userData) {
+                window.location.href = '/login';
+                return;
+            }
+            const user = JSON.parse(userData);
+            
+            // Pre-fill form fields
+            document.getElementById('full_name').value = user.full_name || '';
+            document.getElementById('email').value = user.email || '';
+            document.getElementById('phone_number').value = user.phone_number || '';
+            document.getElementById('farm_name').value = user.farm_name || '';
+        });
+
+        async function handleProfileUpdate(event) {
+            event.preventDefault();
+            
+            const userData = JSON.parse(localStorage.getItem('user'));
+            const currentEmail = userData.email;
+            
+            const newEmail = document.getElementById('email').value;
+            const emailRegex = /^[^\s@]+@[a-zA-Z]+(\.[a-zA-Z]+)+$/;
+            if (!emailRegex.test(newEmail)) {
+                alert("Please enter a valid email address. After the '@' symbol, only letters and dots are allowed.");
+                return;
+            }
+
+            const payload = {
+                current_email: currentEmail,
+                full_name: document.getElementById('full_name').value,
+                email: newEmail,
+                phone_number: document.getElementById('phone_number').value,
+                farm_name: document.getElementById('farm_name').value
+            };
+
+            const btn = event.target;
+            const originalText = btn.textContent;
+            btn.disabled = true;
+            btn.textContent = 'Saving...';
+
+            try {
+                const response = await fetch('http://127.0.0.1:5000/farmer/update-profile', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                });
+
+                const data = await response.json();
+
+                if (data.status === 'success') {
+                    // Update Local Storage with new details
+                    userData.full_name = payload.full_name;
+                    userData.email = payload.email;
+                    userData.phone_number = payload.phone_number;
+                    userData.farm_name = payload.farm_name;
+                    localStorage.setItem('user', JSON.stringify(userData));
+
+                    alert('Profile updated successfully!');
+                    window.location.href = '/profile_settings';
+                } else {
+                    alert('Error: ' + data.message);
+                }
+            } catch (err) {
+                console.error('Update Error:', err);
+                alert('Connection failed. Please check if the backend is running.');
+            } finally {
+                btn.disabled = false;
+                btn.textContent = originalText;
+            }
+        }
+
+        function showLogoutModal() { document.getElementById('logoutModal').classList.add('active'); }
+        function hideLogoutModal() { document.getElementById('logoutModal').classList.remove('active'); }
+        function handleLogout() {
+            localStorage.clear();
+            sessionStorage.clear();
+            window.location.href = '/index';
+        }
+    </script>
+</body>
+</html>

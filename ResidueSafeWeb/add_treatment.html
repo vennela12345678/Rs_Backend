@@ -1,0 +1,667 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add Treatment - ResidueSafe Web</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --sidebar-width: 280px;
+            --bg-color: #F4F7FE;
+            --text-dark: #1A202C;
+            --text-gray: #718096;
+            --primary-green: #4CAF50;
+            --white: #FFFFFF;
+        }
+        html, body {
+            margin: 0;
+            padding: 0;
+            height: 100%;
+            width: 100%;
+            overflow: hidden;
+        }
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-dark);
+            display: grid;
+            grid-template-columns: var(--sidebar-width) 1fr;
+            grid-template-rows: auto 1fr;
+        }
+
+        /* Sidebar Styles */
+        .sidebar {
+            grid-row: 1 / 3;
+            background: linear-gradient(180deg, #102814 0%, #1c4722 100%);
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            color: white;
+            box-shadow: 4px 0 15px rgba(0,0,0,0.05);
+            z-index: 10;
+        }
+        .sidebar-brand {
+            padding: 30px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+        }
+        .sidebar-logo {
+            width: 45px;
+            height: 45px;
+            background: white;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .sidebar-logo img {
+            width: 32px;
+            height: 32px;
+            border-radius: 8px;
+        }
+        .sidebar-title {
+            font-size: 22px;
+            font-weight: 800;
+            margin: 0;
+            letter-spacing: -0.5px;
+        }
+        .sidebar-nav {
+            padding: 30px 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            flex-grow: 1;
+        }
+        .nav-link {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            padding: 16px 20px;
+            border-radius: 12px;
+            color: rgba(255,255,255,0.7);
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 15px;
+            transition: all 0.3s ease;
+        }
+        .nav-link:hover {
+            background: rgba(255,255,255,0.1);
+            color: white;
+        }
+        .nav-link.active {
+            background: var(--primary-green);
+            color: white;
+            box-shadow: 0 4px 15px rgba(76, 175, 80, 0.4);
+        }
+
+        /* Main Wrapper */
+        .main-wrapper {
+            grid-column: 2;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            overflow-y: auto;
+            background-color: var(--bg-color);
+            width: 100%;
+        }
+
+        /* Top Header */
+        .top-header {
+            height: 90px;
+            background: white;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 40px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.02);
+            position: sticky;
+            top: 0;
+            z-index: 5;
+        }
+        .header-search {
+            background: #F4F7FE;
+            border-radius: 30px;
+            padding: 12px 25px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            width: 300px;
+        }
+        .header-search input {
+            border: none;
+            background: transparent;
+            outline: none;
+            width: 100%;
+            font-size: 14px;
+            color: var(--text-dark);
+        }
+        .header-profile-area {
+            display: flex;
+            align-items: center;
+            gap: 25px;
+        }
+        .icon-btn {
+            color: var(--text-gray);
+            font-size: 20px;
+            cursor: pointer;
+            position: relative;
+        }
+        .notification-dot {
+            position: absolute;
+            top: -2px;
+            right: -2px;
+            background: #ff6b6b;
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            border: 2px solid white;
+        }
+        .profile-btn {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            cursor: pointer;
+            text-decoration: none;
+            color: inherit;
+        }
+        .profile-avatar {
+            width: 50px;
+            height: 50px;
+            background: linear-gradient(135deg, #4CAF50, #81C784);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: 700;
+            font-size: 20px;
+            box-shadow: 0 4px 10px rgba(76,175,80,0.3);
+        }
+        .profile-info {
+            display: flex;
+            flex-direction: column;
+        }
+        .profile-name {
+            font-weight: 700;
+            font-size: 16px;
+        }
+        .profile-role {
+            font-size: 13px;
+            color: var(--text-gray);
+        }
+
+        /* Page Content Content */
+        .content {
+            padding: 40px;
+            flex: 1;
+        }
+        .page-header {
+            margin-bottom: 30px;
+        }
+        .page-title {
+            font-size: 28px;
+            font-weight: 800;
+            color: var(--text-dark);
+            margin: 0 0 5px 0;
+            letter-spacing: -0.5px;
+        }
+        .page-subtitle {
+            color: var(--text-gray);
+            margin: 0;
+            font-size: 16px;
+        }
+
+        /* Form Card Styling */
+        .form-card {
+            background: white;
+            border-radius: 20px;
+            padding: 40px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.03);
+            width: 100%; /* Stretch to fill content area */
+            box-sizing: border-box;
+        }
+        .form-group {
+            margin-bottom: 25px;
+        }
+        .form-label {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 14px;
+            font-weight: 700;
+            color: var(--text-dark);
+            margin-bottom: 10px;
+        }
+        .form-label i {
+            color: var(--text-gray);
+        }
+        .form-input, .form-select, .form-textarea {
+            width: 100%;
+            padding: 15px 20px;
+            border: 1px solid #E2E8F0;
+            border-radius: 12px;
+            font-size: 15px;
+            color: var(--text-dark);
+            font-family: inherit;
+            background: white;
+            transition: border-color 0.3s;
+            box-sizing: border-box;
+        }
+        .form-textarea {
+            resize: vertical;
+            min-height: 120px;
+        }
+        .form-input:focus, .form-select:focus, .form-textarea:focus {
+            outline: none;
+            border-color: var(--primary-green);
+        }
+
+        /* Two Column Layout */
+        .form-row {
+            display: flex;
+            gap: 20px;
+        }
+        .form-row .form-group {
+            flex: 1;
+        }
+
+        /* Warning Reminder Box */
+        .reminder-box {
+            background-color: #FFFBEB;
+            border: 1px solid #FEF3C7;
+            border-radius: 12px;
+            padding: 20px;
+            display: flex;
+            gap: 15px;
+            margin-top: 40px;
+            margin-bottom: 30px;
+        }
+        .reminder-icon {
+            color: #D97706;
+            font-size: 24px;
+        }
+        .reminder-title {
+            color: #92400E;
+            font-size: 15px;
+            font-weight: 700;
+            margin: 0 0 5px 0;
+        }
+        .reminder-text {
+            color: #B45309;
+            font-size: 13px;
+            margin: 0;
+            line-height: 1.5;
+        }
+
+        /* Buttons Component */
+        .form-actions {
+            display: flex;
+            gap: 20px;
+        }
+        .btn {
+            flex: 1;
+            padding: 16px;
+            border-radius: 12px;
+            font-size: 16px;
+            font-weight: 700;
+            cursor: pointer;
+            text-align: center;
+            border: none;
+            transition: opacity 0.3s, transform 0.2s;
+            text-decoration: none;
+        }
+        .btn:hover {
+            opacity: 0.9;
+            transform: translateY(-2px);
+        }
+        .btn-cancel {
+            background: white;
+            color: var(--text-gray);
+            border: 1px solid #E2E8F0;
+        }
+        .btn-submit {
+            background: linear-gradient(135deg, #4CAF50, #81C784);
+            color: white;
+            box-shadow: 0 4px 15px rgba(76,175,80,0.3);
+        }
+
+        /* Logout Modal */
+        .modal-overlay { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(0, 0, 0, 0.4); backdrop-filter: blur(4px); display: none; align-items: center; justify-content: center; z-index: 1000; animation: fadeIn 0.2s ease-out; }
+        .modal-card { background: white; border-radius: 24px; padding: 40px; width: 380px; text-align: center; box-shadow: 0 20px 40px rgba(0,0,0,0.1); transform: scale(0.9); transition: transform 0.2s ease-out; }
+        .modal-overlay.active { display: flex; }
+        .modal-overlay.active .modal-card { transform: scale(1); }
+        .modal-icon { width: 70px; height: 70px; background: #FFF1F2; color: #E11D48; border-radius: 20px; display: flex; align-items: center; justify-content: center; font-size: 28px; margin: 0 auto 20px auto; }
+        .modal-title { font-size: 22px; font-weight: 800; margin-bottom: 10px; }
+        .modal-text { color: var(--text-gray); font-size: 14px; margin-bottom: 25px; line-height: 1.5; }
+        .modal-btns { display: flex; flex-direction: column; gap: 10px; }
+        .m-btn { padding: 14px; border-radius: 12px; font-weight: 700; cursor: pointer; text-decoration: none; transition: all 0.2s; border: none; }
+        .m-btn-logout { background: #E11D48; color: white; }
+        .m-btn-cancel { background: #F1F5F9; color: #475569; }
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+    </style>
+</head>
+<body>
+
+    <!-- Desktop Sidebar -->
+    <aside class="sidebar">
+        <div class="sidebar-brand">
+            <div class="sidebar-logo">
+                <img src="/assets/logo.png" alt="Logo" onerror="this.src='data:image/svg+xml;utf8,<svg xmlns=\'http://www.w3.org/2000/svg\' viewBox=\'0 0 100 100\'><circle cx=\'50\' cy=\'50\' r=\'45\' fill=\'%23e0e0e0\'/><text x=\'50\' y=\'55\' font-family=\'sans-serif\' font-weight=\'bold\' font-size=\'30\' text-anchor=\'middle\' fill=\'%23888\'>RS</text></svg>';">
+            </div>
+            <h2 class="sidebar-title">ResidueSafe</h2>
+        </div>
+        <nav class="sidebar-nav">
+            <a href="/farmer_dashboard" class="nav-link"><i class="fas fa-home"></i> Dashboard</a>
+            <a href="/add_treatment" class="nav-link active"><i class="fas fa-syringe"></i> Treatments</a>
+            <a href="/withdrawal_status" class="nav-link"><i class="fas fa-stopwatch"></i> Withdrawal Status</a>
+            <a href="/add_animals" class="nav-link"><i class="fas fa-paw"></i> Add Animals</a>
+            <a href="/treatment_history" class="nav-link"><i class="fas fa-history"></i> History & Reports</a>
+            <a href="#" class="nav-link" style="margin-top:auto;" onclick="showLogoutModal()"><i class="fas fa-sign-out-alt"></i> Logout</a>
+        </nav>
+    </aside>
+
+    <div class="main-wrapper">
+        <!-- Desktop Header -->
+        <header class="top-header">
+            <div class="header-profile-area">
+                <a href="/profile_settings" class="profile-btn" style="text-decoration: none; color: inherit;">
+                    <div class="profile-avatar">U</div>
+                    <div class="profile-info">
+                        <span class="profile-name">User Account</span>
+                        <span class="profile-role">Farmer Portal</span>
+                        <span class="profile-farm" style="font-size: 11px; opacity: 0.8; font-weight: 500;">Green Pastures Farm</span>
+                    </div>
+                </a>
+            </div>
+        </header>
+
+        <!-- Form Content -->
+        <div class="content">
+            <div class="page-header">
+                <h1 class="page-title">Log New Treatment</h1>
+                <p class="page-subtitle">Accurately record antimicrobial details to ensure food safety compliance.</p>
+            </div>
+
+            <div class="form-card">
+                
+                <div class="form-row">
+                    <div class="form-group">
+                        <label class="form-label"><i class="fas fa-hashtag"></i> Animal ID / Tag Number</label>
+                        <input type="text" class="form-input" placeholder="e.g., COW-001, 12345">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label"><i class="fas fa-paw"></i> Animal Type</label>
+                        <select class="form-select">
+                            <option value="" disabled selected>Select an animal type</option>
+                            <option>Cow</option>
+                            <option>Buffalo</option>
+                            <option>Goat</option>
+                            <option>Sheep</option>
+                            <option>Hen</option>
+                            <option>Pig</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label class="form-label"><i class="fas fa-prescription-bottle-alt"></i> Drug Name</label>
+                        <input type="text" id="drugInput" class="form-input" list="medicineList" placeholder="Search or select a medicine..." oninput="checkMedicineOther()">
+                        <datalist id="medicineList">
+                            <option value="Albendazole"></option>
+                            <option value="Amoxicillin"></option>
+                            <option value="Amprolium"></option>
+                            <option value="Bacitracin"></option>
+                            <option value="Ceftiofur"></option>
+                            <option value="Chlortetracycline"></option>
+                            <option value="Clorsulon"></option>
+                            <option value="Dexamethasone"></option>
+                            <option value="Doramectin"></option>
+                            <option value="Enrofloxacin"></option>
+                            <option value="Eprinomectin"></option>
+                            <option value="Erythromycin"></option>
+                            <option value="Fenbendazole"></option>
+                            <option value="Florfenicol"></option>
+                            <option value="Flubendazole"></option>
+                            <option value="Flunixin"></option>
+                            <option value="Gentamicin"></option>
+                            <option value="Ivermectin"></option>
+                            <option value="Ketoprofen"></option>
+                            <option value="Lasalocid"></option>
+                            <option value="Levamisole"></option>
+                            <option value="Lincomycin"></option>
+                            <option value="Meloxicam"></option>
+                            <option value="Monensin"></option>
+                            <option value="Moxidectin"></option>
+                            <option value="Nystatin"></option>
+                            <option value="Oxytetracycline"></option>
+                            <option value="Penicillin G"></option>
+                            <option value="Piperazine"></option>
+                            <option value="Sulfadimethoxine"></option>
+                            <option value="Sulfaquinoxaline"></option>
+                            <option value="Thiamine"></option>
+                            <option value="Tilmicosin"></option>
+                            <option value="Trimethoprim/Sulfa"></option>
+                            <option value="Tylosin"></option>
+                            <option value="Other"></option>
+                        </datalist>
+                        <input type="text" id="otherMedicine" class="form-input" style="display: none; margin-top: 10px;" placeholder="Type medicine name here...">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label"><i class="fas fa-eye-dropper"></i> Dosage</label>
+                        <input type="text" class="form-input" id="dosageInput" placeholder="e.g., 10 ml, 500 mg">
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label"><i class="far fa-calendar-alt"></i> Treatment Date</label>
+                    <input type="date" class="form-input">
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label"><i class="far fa-sticky-note"></i> Additional Notes</label>
+                    <textarea class="form-textarea" placeholder="Reason for treatment, symptoms, weight, etc."></textarea>
+                </div>
+
+                <div class="reminder-box">
+                    <i class="fas fa-exclamation-triangle reminder-icon"></i>
+                    <div>
+                        <h4 class="reminder-title">Important Legal Reminder</h4>
+                        <p class="reminder-text">Do not sell milk, meat, or eggs from treated animals until the required biological withdrawal period has completely elapsed. Refer to the manufacturer label.</p>
+                    </div>
+                </div>
+
+                <div class="form-actions">
+                    <a href="/farmer_dashboard" class="btn btn-cancel">Cancel</a>
+                    <button class="btn btn-submit">Record Treatment</button>
+                </div>
+            </div>
+            
+        </div>
+    </div>
+
+    <!-- Logout Modal Overlay -->
+    <div class="modal-overlay" id="logoutModal">
+        <div class="modal-card">
+            <div class="modal-icon"><i class="fas fa-sign-out-alt"></i></div>
+            <div class="modal-title">Log Out?</div>
+            <p class="modal-text">Are you sure you want to log out of ResidueSafe? You will need to sign in again to access your farm data.</p>
+            <div class="modal-btns">
+                <a href="/index" class="m-btn m-btn-logout">Yes, Log Out</a>
+                <button class="m-btn m-btn-cancel" onclick="hideLogoutModal()">Cancel</button>
+            </div>
+        </div>
+    </div>
+    <script>
+        function showLogoutModal() { document.getElementById('logoutModal').classList.add('active'); }
+        function hideLogoutModal() { document.getElementById('logoutModal').classList.remove('active'); }
+        function handleLogout() { localStorage.clear(); window.location.href = '/index'; }
+
+        function checkMedicineOther() {
+            const input = document.getElementById('drugInput');
+            const otherInput = document.getElementById('otherMedicine');
+            if (input.value === 'Other') {
+                otherInput.style.display = 'block';
+                otherInput.focus();
+            } else {
+                otherInput.style.display = 'none';
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', async () => {
+            const userData = localStorage.getItem('user');
+            if (!userData) {
+                window.location.href = '/login';
+                return;
+            }
+            const user = JSON.parse(userData);
+            
+            // Sync Profile Info
+            document.querySelector('.profile-name').textContent = user.full_name || 'Farmer';
+            document.querySelector('.profile-farm').textContent = user.farm_name || 'My Farm';
+
+            // Populate Animal ID Dropdown
+            const animalInput = document.querySelector('input[placeholder="e.g., COW-001, 12345"]');
+            animalInput.setAttribute('list', 'animalList');
+            const datalist = document.createElement('datalist');
+            datalist.id = 'animalList';
+            document.body.appendChild(datalist);
+
+            try {
+                const response = await fetch(`http://127.0.0.1:5000/all-animals/${user.id}`);
+                const data = await response.json();
+                if (data.status === "success") {
+                    data.data.forEach(animal => {
+                        const option = document.createElement('option');
+                        option.value = animal.tag_id;
+                        option.textContent = `${animal.tag_id} (${animal.animal_name || 'No Name'})`;
+                        datalist.appendChild(option);
+                    });
+                }
+            } catch (err) {
+                console.error("Fetch Animals Error:", err);
+            }
+
+            // Restrict Treatment Date (Present + Past 10 Days)
+            const dateInputEl = document.querySelector('input[type="date"]');
+            const todayStr = new Date().toISOString().split('T')[0];
+            const tenDaysAgoDate = new Date();
+            tenDaysAgoDate.setDate(tenDaysAgoDate.getDate() - 10);
+            const tenDaysAgoStr = tenDaysAgoDate.toISOString().split('T')[0];
+            
+            dateInputEl.setAttribute('max', todayStr);
+            dateInputEl.setAttribute('min', tenDaysAgoStr);
+            dateInputEl.value = todayStr; // Default to today
+
+            // Handle Submission
+            document.querySelector('.btn-submit').addEventListener('click', async () => {
+                const tagId = animalInput.value.trim();
+                const animalType = document.querySelector('.form-select').value;
+                
+                let drugName = document.getElementById('drugInput').value.trim();
+                if (drugName === 'Other') {
+                    drugName = document.getElementById('otherMedicine').value.trim();
+                }
+
+                const dosage = document.getElementById('dosageInput').value.trim();
+                const dateInput = dateInputEl.value;
+                const notes = document.querySelector('.form-textarea').value;
+
+                if (!tagId || !animalType || !drugName || !dateInput || !dosage) {
+                    alert("Please fill in all required fields (*)");
+                    return;
+                }
+
+                // Date Range Validation (Present + Past 10 Days)
+                const dateVal = new Date(dateInput);
+                const today = new Date();
+                today.setHours(23, 59, 59, 999); // Include whole of today
+                const tenDaysAgo = new Date();
+                tenDaysAgo.setDate(new Date().getDate() - 10);
+                tenDaysAgo.setHours(0, 0, 0, 0);
+
+                if (dateVal > today) {
+                    alert("Treatment date cannot be in the future.");
+                    return;
+                }
+                if (dateVal < tenDaysAgo) {
+                    alert("Treatment date cannot be older than 10 days.");
+                    return;
+                }
+
+                // Validation: Tag ID must have both letters and numbers
+                const alnumRegex = /^(?=.*[a-zA-Z])(?=.*[0-9])[a-zA-Z0-9.\s-]+$/;
+                if (!alnumRegex.test(tagId)) {
+                    alert("Animal ID / Tag Number must contain a combination of letters and numbers (e.g., COW123). Pure letters or pure numbers are not accepted.");
+                    return;
+                }
+
+                // Validation: Dosage must have both value and unit
+                if (!alnumRegex.test(dosage)) {
+                    alert("Dosage must contain both a value and a unit (e.g., 10ml). Pure numbers or pure letters are not accepted.");
+                    return;
+                }
+
+                // Validation: Dosage Range (1-500ml, 1-10 tablets)
+                const dosageNum = parseFloat(dosage);
+                const dosageUnit = dosage.replace(/[0-9.]/g, '').trim().toLowerCase();
+
+                if (dosageUnit.includes('ml')) {
+                    if (dosageNum < 1 || dosageNum > 500) {
+                        alert("Dosage in ml must be between 1 and 500 ml.");
+                        return;
+                    }
+                } else if (dosageUnit.includes('tablet') || dosageUnit.includes('tab')) {
+                    if (dosageNum < 1 || dosageNum > 10) {
+                        alert("Dosage in tablets must be between 1 and 10 tablets.");
+                        return;
+                    }
+                }
+
+                const [y, m, d] = dateInput.split('-');
+                const formattedDate = `${d}/${m}/${y}`;
+
+                const btn = document.querySelector('.btn-submit');
+                btn.disabled = true;
+                btn.textContent = 'Recording...';
+
+                try {
+                    const response = await fetch('http://127.0.0.1:5000/add-treatment', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({
+                            user_id: user.id,
+                            animal_id: tagId,
+                            animal_type: animalType,
+                            drug_name: drugName,
+                            dosage: dosage,
+                            treatment_date: formattedDate,
+                            notes: notes
+                        })
+                    });
+
+                    const resData = await response.json();
+                    if (response.ok) {
+                        alert("Treatment recorded successfully!");
+                        window.location.href = '/withdrawal_status';
+                    } else {
+                        alert(resData.message || 'Error recording treatment');
+                    }
+                } catch (err) {
+                    console.error("Add Treatment Error:", err);
+                    alert("Server connection failed.");
+                } finally {
+                    btn.disabled = false;
+                    btn.textContent = 'Record Treatment';
+                }
+            });
+        });
+    </script>
+</body>
+</html>

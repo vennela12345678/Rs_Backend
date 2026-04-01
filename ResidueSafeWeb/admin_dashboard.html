@@ -1,0 +1,524 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard - ResidueSafe Portal</title>
+    <link rel="stylesheet" href="/style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --sidebar-width: 260px;
+            --admin-blue-deep: #1A365D;
+            --admin-blue-light: #2B7FFF;
+            --admin-bg-light: #F8FAFC;
+        }
+        body, html {
+            height: 100vh;
+            margin: 0;
+            font-family: 'Inter', sans-serif;
+            background-color: #F4F7F6;
+            overflow: hidden; /* Prevent body scroll */
+        }
+        .app-container {
+            display: flex;
+            width: 100%;
+            height: 100vh;
+        }
+
+        /* Sidebar Sidebar */
+        .sidebar {
+            width: 240px;
+            background: var(--admin-blue-deep);
+            color: white;
+            display: flex;
+            flex-direction: column;
+            flex-shrink: 0;
+            height: 100vh;
+            position: sticky;
+            top: 0;
+            height: 100vh;
+            box-shadow: 2px 0 10px rgba(0,0,0,0.05);
+            z-index: 1001;
+        }
+        .sidebar-header {
+            padding: 30px 25px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            border-bottom: 1px solid rgba(255,255,255,0.05);
+        }
+        .sidebar-logo { width: 32px; height: 32px; }
+        .sidebar-title {
+            font-size: 1.25rem;
+            font-weight: 800;
+            letter-spacing: -0.5px;
+        }
+        .sidebar-nav {
+            flex: 1;
+            padding: 30px 15px;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+        .nav-link {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            padding: 14px 20px;
+            color: rgba(255,255,255,0.7);
+            text-decoration: none;
+            border-radius: 12px;
+            font-weight: 500;
+            transition: all 0.3s;
+        }
+        .nav-link:hover, .nav-link.active {
+            background: rgba(255,255,255,0.1);
+            color: white;
+        }
+        .nav-link.active {
+            background: var(--admin-blue-light);
+            box-shadow: 0 4px 15px rgba(43, 127, 255, 0.3);
+        }
+        .sidebar-footer {
+            padding: 30px;
+            border-top: 1px solid rgba(255,255,255,0.05);
+        }
+
+        /* Main Content area */
+        .main-content {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+            overflow-y: auto; /* Internal Scrolling */
+            background-color: #F4F7F6;
+        }
+        .top-header {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            padding: 15px 40px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+            position: sticky;
+            top: 0;
+            z-index: 900;
+        }
+        .breadcrumb {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            color: #718096;
+            font-size: 0.8rem;
+            font-weight: 500;
+        }
+        .admin-profile-menu {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            cursor: pointer;
+            padding: 5px 15px;
+            border-radius: 30px;
+            transition: all 0.3s;
+        }
+        .admin-profile-menu:hover { background: #F7FAFC; }
+        .avatar {
+            width: 40px;
+            height: 40px;
+            background: var(--admin-blue-light);
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 800;
+        }
+        .profile-info { text-align: right; }
+        .profile-name { font-weight: 700; color: #1A202C; display: block; font-size: 0.9rem;}
+        .profile-role { color: #718096; font-size: 0.75rem;}
+
+        .dashboard-body {
+            padding: 25px 40px;
+            flex: 1;
+        }
+        .welcome-section { margin-bottom: 30px; }
+        .welcome-title { font-size: 1.75rem; font-weight: 800; color: #1A202C; margin-bottom: 5px; }
+        .welcome-subtitle { color: #718096; font-size: 0.95rem; }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 25px;
+            margin-bottom: 40px;
+        }
+        .stat-card {
+            background: white;
+            padding: 20px 25px;
+            border-radius: 20px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.02);
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            transition: all 0.3s;
+            border: 1px solid #EDF2F7;
+        }
+        .stat-card:hover { transform: translateY(-4px); border-color: var(--admin-blue-light); box-shadow: 0 10px 20px rgba(43, 127, 255, 0.05); }
+        .stat-icon-box {
+            width: 55px;
+            height: 55px;
+            border-radius: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+        }
+        .icon-blue { background: #EBF8FF; color: var(--admin-blue-light); }
+        .icon-green { background: #F0FDF4; color: #22C55E; }
+        .icon-yellow { background: #FFFBEB; color: #D97706; }
+        .stat-value { font-size: 1.65rem; font-weight: 800; color: #1A202C; }
+        .stat-label { font-weight: 600; color: #718096; font-size: 0.9rem;}
+
+        .table-section {
+            background: white;
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.02);
+            border: 1px solid #EDF2F7;
+        }
+        .section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 25px;
+            width: 100%;
+        }
+        .section-title { font-size: 1.4rem; font-weight: 800; color: #1A202C; text-align: left; margin: 0; padding: 0; }
+        .btn-view-all {
+            color: var(--admin-blue-light);
+            text-decoration: none;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            transition: gap 0.3s;
+        }
+        .btn-view-all:hover { gap: 12px; }
+
+        .farm-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        .farm-table th {
+            text-align: left !important;
+            padding: 15px 20px;
+            border-bottom: 2px solid #F7FAFC;
+            color: #A0AEC0;
+            text-transform: uppercase;
+            font-size: 0.75rem;
+            letter-spacing: 1px;
+            font-weight: 700;
+        }
+        .farm-table td {
+            padding: 20px;
+            border-bottom: 1px solid #F7FAFC;
+            color: #4A5568;
+            font-size: 0.95rem;
+        }
+        .farm-table tr:last-child td { border-bottom: none; }
+        .farm-table tr:hover { background: #F8FAFC; border-radius: 12px; }
+        
+        .farm-cell { display: flex; align-items: center; gap: 15px; }
+        .farm-initial {
+            width: 45px;
+            height: 45px;
+            background: #EBF8FF;
+            color: var(--admin-blue-light);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 800;
+            font-size: 1.1rem;
+        }
+        .farm-name-text { display: block; font-weight: 700; color: #1A202C; }
+        .farm-subtext { font-size: 0.8rem; color: #A0AEC0; }
+        
+        .badge {
+            padding: 6px 14px;
+            border-radius: 10px;
+            font-weight: 700;
+            font-size: 0.8rem;
+        }
+        .badge-blue { background: #EBF4FF; color: #3B82F6; }
+        .badge-active { background: #E6F4EA; color: #22C55E; }
+
+        .action-link {
+            padding: 8px 15px;
+            border-radius: 8px;
+            color: var(--admin-blue-light);
+            text-decoration: none;
+            font-weight: 700;
+            transition: background 0.3s;
+        }
+        .action-link:hover { background: #EBF8FF; }
+
+        @media (max-width: 1100px) {
+            .sidebar { width: 70px; }
+            .sidebar-title, .nav-link span, .profile-info { display: none; }
+            .sidebar-header, .sidebar-nav { justify-content: center; padding: 20px 10px; }
+            .nav-link { padding: 12px; justify-content: center; }
+        }
+    </style>
+</head>
+<body>
+    <div class="app-container">
+
+    <!-- Sidebar Section -->
+    <aside class="sidebar">
+        <div class="sidebar-header">
+            <img src="/assets/logo.png" alt="Logo" class="sidebar-logo" onerror="this.src='https://via.placeholder.com/40/fff/2B7FFF?text=RS'">
+            <span class="sidebar-title">ResidueSafe</span>
+        </div>
+
+        <nav class="sidebar-nav">
+            <a href="/admin_dashboard" class="nav-link active">
+                <i class="fas fa-th-large"></i> <span>Dashboard</span>
+            </a>
+            <a href="/admin_total_farms" class="nav-link">
+                <i class="fas fa-building"></i> <span>Registered Farms</span>
+            </a>
+            <a href="/admin_drugs" class="nav-link">
+                <i class="fas fa-pills"></i> <span>Drug Registry</span>
+            </a>
+            <a href="/admin_profile" class="nav-link">
+                <i class="fas fa-user-circle"></i> <span>Admin Profile</span>
+            </a>
+            <a href="#" class="nav-link">
+                <i class="fas fa-cog"></i> <span>System Settings</span>
+            </a>
+        </nav>
+
+        <div class="sidebar-footer">
+            <a href="#" class="nav-link" style="color: #FC8181;" onclick="handleAdminLogout()">
+                <i class="fas fa-sign-out-alt"></i> <span>Logout Portal</span>
+            </a>
+        </div>
+    </aside>
+
+    <!-- Main Content Section -->
+    <main class="main-content">
+        <header class="top-header">
+            <div class="breadcrumb">
+                <i class="fas fa-home"></i> / Dashboard / Overview
+            </div>
+
+            <div class="admin-profile-menu">
+                <div class="profile-info">
+                    <span class="profile-name">Administrator</span>
+                    <span class="profile-role">Root Access</span>
+                </div>
+                <div class="avatar">A</div>
+            </div>
+        </header>
+
+        <div class="dashboard-body">
+            <div class="welcome-section">
+                <h1 class="welcome-title">Farm Oversight Dashboard</h1>
+                <p class="welcome-subtitle">Welcome back. Here's a high-level overview of our current infrastructure compliance.</p>
+            </div>
+
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-icon-box icon-blue">
+                        <i class="fas fa-users-cog"></i>
+                    </div>
+                    <div>
+                        <div class="stat-value">128</div>
+                        <div class="stat-label">Total Active Farms</div>
+                    </div>
+                </div>
+
+                <div class="stat-card">
+                    <div class="stat-icon-box icon-green">
+                        <i class="fas fa-chart-line"></i>
+                    </div>
+                    <div>
+                        <div class="stat-value">4,520</div>
+                        <div class="stat-label">Animals Monitored</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="table-section">
+                <div class="section-header">
+                    <h2 class="section-title">Recent Farm Operations</h2>
+                    <a href="/admin_total_farms" class="btn-view-all">View All Registry <i class="fas fa-chevron-right"></i></a>
+                </div>
+
+                <table class="farm-table">
+                    <thead>
+                        <tr>
+                            <th>Farm Operation & ID</th>
+                            <th>Primary Owner</th>
+                            <th>Regional HQ</th>
+                            <th>Population</th>
+                            <th>Last Audited</th>
+
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>
+                                <div class="farm-cell">
+                                    <div class="farm-initial">G</div>
+                                    <div>
+                                        <span class="farm-name-text">Green Valley Dairy</span>
+                                        <span class="farm-subtext">#FV-001</span>
+                                    </div>
+                                </div>
+                            </td>
+                            <td><strong>John Doe</strong></td>
+                            <td>North Region</td>
+                            <td><span class="badge badge-blue">42 Animals</span></td>
+                            <td>Mar 15, 2026</td>
+
+                        </tr>
+                        <tr>
+                            <td>
+                                <div class="farm-cell">
+                                    <div class="farm-initial" style="background: #F0F9FF;">S</div>
+                                    <div>
+                                        <span class="farm-name-text">Sunrise Poultry</span>
+                                        <span class="farm-subtext">#FV-082</span>
+                                    </div>
+                                </div>
+                            </td>
+                            <td><strong>Sarah Smith</strong></td>
+                            <td>East District</td>
+                            <td><span class="badge badge-blue">120 Animals</span></td>
+                            <td>Mar 18, 2026</td>
+
+                        </tr>
+                        <tr>
+                            <td>
+                                <div class="farm-cell">
+                                    <div class="farm-initial" style="background: #FEF3F3;">M</div>
+                                    <div>
+                                        <span class="farm-name-text">Mountain Sheep Farm</span>
+                                        <span class="farm-subtext">#FV-145</span>
+                                    </div>
+                                </div>
+                            </td>
+                            <td><strong>Robert Wilson</strong></td>
+                            <td>Western Highlands</td>
+                            <td><span class="badge badge-blue">85 Animals</span></td>
+                            <td>Mar 20, 2026</td>
+
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </main>
+
+    </div>
+    <script>
+        document.addEventListener('DOMContentLoaded', async () => {
+            const adminData = localStorage.getItem('adminUser');
+            if (!adminData) {
+                window.location.href = '/admin_login';
+                return;
+            }
+
+            const admin = JSON.parse(adminData);
+            
+            // Sync Admin Header
+            const profileName = document.querySelector('.profile-name');
+            if (profileName) {
+                const nameFromEmail = admin.email ? admin.email.split('@')[0] : 'Admin';
+                profileName.textContent = nameFromEmail.charAt(0).toUpperCase() + nameFromEmail.slice(1);
+            }
+            const avatar = document.querySelector('.avatar');
+            if (avatar && admin.email) avatar.textContent = admin.email.charAt(0).toUpperCase();
+
+            // Fetch Real Stats from Backend
+            try {
+                const response = await fetch('http://127.0.0.1:5000/admin/dashboard');
+                const data = await response.json();
+                
+                if (data.status === "success") {
+                    updateDashboardStats(data.stats);
+                    renderRecentFarms(data.recent_farms);
+                }
+            } catch (err) {
+                console.error("Admin Dashboard Fetch Error:", err);
+            }
+
+            // Real-time welcome greeting
+            const now = new Date();
+            const hour = now.getHours();
+            const greeting = hour < 12 ? "Good Morning" : hour < 18 ? "Good Afternoon" : "Good Evening";
+            const welcomeTitle = document.querySelector('.welcome-title');
+            if (welcomeTitle) welcomeTitle.textContent = `${greeting}, Admin Oversight`;
+        });
+
+        function updateDashboardStats(stats) {
+            const statValues = document.querySelectorAll('.stat-value');
+            if (statValues.length >= 2) {
+                statValues[0].textContent = stats.total_farms || '0';
+                statValues[1].textContent = stats.total_animals || '0';
+            }
+        }
+
+        function renderRecentFarms(farms) {
+            const tbody = document.querySelector('.farm-table tbody');
+            if (!tbody) return;
+            
+            tbody.innerHTML = '';
+            
+            if (!farms || farms.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="5" style="text-align: center; padding: 40px; color: #718096;">Registry currently clear.</td></tr>';
+                return;
+            }
+
+            farms.forEach((farm, idx) => {
+                const initial = farm.name.charAt(0).toUpperCase();
+                // Random variation for initials background
+                const bgColors = ['#EBF8FF', '#F0FDF4', '#FEF3F3', '#FFFBEB', '#F5F3FF'];
+                const bg = bgColors[idx % bgColors.length];
+                
+                const row = `
+                    <tr>
+                        <td>
+                            <div class="farm-cell">
+                                <div class="farm-initial" style="background: ${bg};">${initial}</div>
+                                <div>
+                                    <span class="farm-name-text">${farm.name}</span>
+                                    <span class="farm-subtext">ID: #${1000 + idx}</span>
+                                </div>
+                            </div>
+                        </td>
+                        <td><strong>${farm.owner}</strong></td>
+                        <td>${farm.region}</td>
+                        <td><span class="badge badge-blue">${farm.animals}</span></td>
+                        <td>Today</td>
+
+                    </tr>
+                `;
+                tbody.innerHTML += row;
+            });
+        }
+
+        function handleAdminLogout() {
+            localStorage.clear();
+            sessionStorage.clear();
+            window.location.href = '/index';
+        }
+    </script>
+</body>
+</html>

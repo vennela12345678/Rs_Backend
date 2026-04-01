@@ -1,0 +1,291 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Login - ResidueSafe Portal</title>
+    <link rel="stylesheet" href="/style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --admin-primary: #2B7FFF;
+            --admin-secondary: #00E676;
+            --admin-bg: #F7FAFC;
+        }
+        body, html {
+            height: 100%;
+            margin: 0;
+            font-family: 'Inter', sans-serif;
+            background-color: var(--admin-bg);
+        }
+        .split-container {
+            display: flex;
+            height: 100vh;
+            width: 100%;
+        }
+        /* Left Side - Branding & Visuals */
+        .visual-side {
+            flex: 1.25;
+            background: linear-gradient(135deg, #1A365D 0%, #2B7FFF 100%);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 50px;
+            color: white;
+            position: relative;
+        }
+        .visual-content {
+            z-index: 2;
+            text-align: center;
+            width: 100%;
+            max-width: 520px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        .portal-logo {
+            width: 120px;
+            height: 120px;
+            margin: 0 auto 25px;
+            display: block;
+            border-radius: 50%;
+            background: white;
+            padding: 10px;
+            object-fit: contain;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+        }
+        .visual-side h1 {
+            font-size: 2.5rem;
+            font-weight: 800;
+            margin-bottom: 15px;
+            letter-spacing: -1px;
+        }
+        .visual-side p {
+            font-size: 1.1rem;
+            line-height: 1.6;
+            opacity: 0.9;
+            font-weight: 300;
+        }
+
+        /* Right Side - Login Form */
+        .form-side {
+            flex: 1;
+            background: white;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: 40px;
+            box-shadow: -10px 0 30px rgba(0,0,0,0.05);
+        }
+        .login-box {
+            width: 100%;
+            max-width: 400px;
+        }
+        .back-to-site {
+            position: absolute;
+            top: 40px;
+            left: 40px;
+            text-decoration: none;
+            color: #718096;
+            font-size: 1.5rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s;
+            width: 50px;
+            height: 50px;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+        }
+        .back-to-site:hover { 
+            color: var(--admin-primary);
+            transform: translateX(-5px);
+        }
+
+        .login-header {
+            margin-bottom: 40px;
+        }
+        .login-header h2 {
+            font-size: 2rem;
+            font-weight: 800;
+            color: #1A202C;
+            margin-bottom: 10px;
+        }
+        .login-header p {
+            color: #718096;
+            font-size: 1rem;
+        }
+
+        .form-group {
+            margin-bottom: 25px;
+        }
+        .form-label {
+            display: block;
+            font-size: 0.9rem;
+            font-weight: 700;
+            color: #4A5568;
+            margin-bottom: 10px;
+        }
+        .input-container {
+            position: relative;
+        }
+        .input-icon {
+            position: absolute;
+            left: 18px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #A0AEC0;
+        }
+        .form-input {
+            width: 100%;
+            padding: 16px 20px 16px 50px;
+            border: 2px solid #E2E8F0;
+            border-radius: 12px;
+            font-size: 1rem;
+            transition: all 0.3s;
+            background: #F8FAFC;
+        }
+        .form-input:focus {
+            outline: none;
+            border-color: var(--admin-primary);
+            background: white;
+            box-shadow: 0 0 0 4px rgba(43, 127, 255, 0.1);
+        }
+        .btn-login {
+            width: 100%;
+            padding: 18px;
+            background: var(--admin-primary);
+            color: white;
+            border: none;
+            border-radius: 12px;
+            font-size: 1.1rem;
+            font-weight: 800;
+            cursor: pointer;
+            transition: all 0.3s;
+            box-shadow: 0 10px 20px rgba(43, 127, 255, 0.2);
+            margin-top: 10px;
+        }
+        .btn-login:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 15px 30px rgba(43, 127, 255, 0.3);
+            background: #1D70F5;
+        }
+
+        .footer-note {
+            margin-top: 40px;
+            text-align: center;
+            font-size: 0.85rem;
+            color: #CBD5E0;
+        }
+
+        @media (max-width: 1100px) {
+            .visual-side { display: none; }
+            .form-side { flex: 1; min-height: 100vh; }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="split-container">
+        <!-- Left Visual Side -->
+        <div class="visual-side">
+            <div class="visual-content">
+                <img src="/assets/logo.png" alt="ResidueSafe Logo" class="portal-logo" onerror="this.src='https://via.placeholder.com/100/fff/2B7FFF?text=RS'">
+                <h1>ResidueSafe</h1>
+                <p>Welcome to the Administrator Portal. Securely manage compliance, drug databases, and farm registration from a centralized web headquarters.</p>
+            </div>
+        </div>
+
+        <!-- Right Form Side -->
+        <div class="form-side">
+            <a href="/role" class="back-to-site" title="Back">
+                <i class="fas fa-arrow-left"></i>
+            </a>
+
+            <div class="login-box">
+                <div class="login-header">
+                    <h2>Admin Login</h2>
+                    <p>Enter your credentials to access the dashboard</p>
+                </div>
+
+                <form id="adminLoginForm">
+                    <div class="form-group">
+                        <label class="form-label">Email Address</label>
+                        <div class="input-container">
+                            <i class="fas fa-envelope input-icon"></i>
+                            <input type="email" id="email" class="form-input" placeholder="admin@residuesafe.com" required>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">Password</label>
+                        <div class="input-container">
+                            <i class="fas fa-lock input-icon"></i>
+                            <input type="password" id="password" class="form-input" placeholder="••••••••" required>
+                        </div>
+                    </div>
+
+                    <button type="submit" class="btn-login">Secure Login</button>
+                    
+                    <div style="text-align: center; margin-top: 20px;">
+                        <a href="/admin_forgot_password" style="color: var(--admin-primary); text-decoration: none; font-size: 0.9rem; font-weight: 700;">Forgot Password?</a>
+                    </div>
+                </form>
+
+                <div class="footer-note">
+                    &copy; 2026 ResidueSafe. Internal Use Only.
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.getElementById('adminLoginForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            const email = document.getElementById('email').value;
+            const password = document.getElementById('password').value;
+            
+            const emailRegex = /^[^\s@]+@[a-zA-Z]+(\.[a-zA-Z]+)+$/;
+            if (!emailRegex.test(email)) {
+                alert("Please enter a valid email address. After the '@' symbol, only letters and dots are allowed.");
+                return;
+            }
+
+            const loginBtn = document.querySelector('.btn-login');
+            loginBtn.disabled = true;
+            loginBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Authenticating...';
+
+            try {
+                const response = await fetch('http://127.0.0.1:5000/admin-login', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ email: email, password: password })
+                });
+
+                const data = await response.json();
+
+                if (response.ok) {
+                    localStorage.setItem('adminUser', JSON.stringify(data.data));
+                    localStorage.setItem('userRole', 'admin');
+                    window.location.href = '/admin_dashboard';
+                } else {
+                    alert(data.message || 'Login failed');
+                }
+            } catch (error) {
+                console.error('Admin Login Error:', error);
+                alert('Connection to server failed.');
+            } finally {
+                loginBtn.disabled = false;
+                loginBtn.textContent = 'Secure Login';
+            }
+        });
+    </script>
+</body>
+</html>

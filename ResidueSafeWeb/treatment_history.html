@@ -1,0 +1,698 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Treatment History - ResidueSafe Web</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --sidebar-width: 280px;
+            --bg-color: #F4F7FE;
+            --text-dark: #1A202C;
+            --text-gray: #718096;
+            --primary-green: #4CAF50;
+            --white: #FFFFFF;
+        }
+
+        html, body {
+            margin: 0;
+            padding: 0;
+            height: 100%;
+            width: 100%;
+            overflow: hidden;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-dark);
+            display: grid;
+            grid-template-columns: var(--sidebar-width) 1fr;
+            grid-template-rows: auto 1fr;
+        }
+
+        /* Sidebar Styles */
+        .sidebar {
+            grid-row: 1 / 3;
+            background: linear-gradient(180deg, #102814 0%, #1c4722 100%);
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            color: white;
+            box-shadow: 4px 0 15px rgba(0,0,0,0.05);
+            z-index: 10;
+        }
+        .sidebar-brand {
+            padding: 30px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+        }
+        .sidebar-logo {
+            width: 45px;
+            height: 45px;
+            background: white;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .sidebar-logo img {
+            width: 32px;
+            height: 32px;
+            border-radius: 8px;
+        }
+        .sidebar-title {
+            font-size: 22px;
+            font-weight: 800;
+            margin: 0;
+            letter-spacing: -0.5px;
+        }
+        .sidebar-nav {
+            padding: 30px 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            flex-grow: 1;
+        }
+        .nav-link {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            padding: 16px 20px;
+            border-radius: 12px;
+            color: rgba(255,255,255,0.7);
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 15px;
+            transition: all 0.3s ease;
+        }
+        .nav-link:hover {
+            background: rgba(255,255,255,0.1);
+            color: white;
+        }
+        .nav-link.active {
+            background: var(--primary-green);
+            color: white;
+            box-shadow: 0 4px 15px rgba(76, 175, 80, 0.4);
+        }
+
+        /* Main Wrapper */
+        .main-wrapper {
+            grid-column: 2;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            overflow-y: auto;
+            background-color: var(--bg-color);
+            width: 100%;
+        }
+
+        /* Top Header */
+        .top-header {
+            height: 110px;
+            background: white;
+            display: flex;
+            justify-content: flex-end;
+            align-items: center;
+            padding: 0 50px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.02);
+            position: sticky;
+            top: 0;
+            z-index: 5;
+        }
+        .header-profile-area {
+            display: flex;
+            align-items: center;
+            gap: 25px;
+        }
+        .profile-btn {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            cursor: pointer;
+            text-decoration: none;
+            color: inherit;
+        }
+        .profile-avatar {
+            width: 50px;
+            height: 50px;
+            background: linear-gradient(135deg, #4CAF50, #81C784);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: 700;
+            font-size: 20px;
+            box-shadow: 0 4px 10px rgba(76,175,80,0.3);
+        }
+        .profile-info {
+            display: flex;
+            flex-direction: column;
+        }
+        .profile-name {
+            font-weight: 700;
+            font-size: 16px;
+        }
+        .profile-role {
+            font-size: 13px;
+            color: var(--text-gray);
+        }
+
+        /* Page Content */
+        .content {
+            padding: 40px;
+            flex: 1;
+        }
+        .page-header {
+            margin-bottom: 30px;
+        }
+        .page-title {
+            font-size: 28px;
+            font-weight: 800;
+            color: var(--text-dark);
+            margin: 0 0 5px 0;
+            letter-spacing: -0.5px;
+        }
+        .page-subtitle {
+            color: var(--text-gray);
+            margin: 0;
+            font-size: 16px;
+        }
+
+        /* Filter & Search Section */
+        .filter-section {
+            background: white;
+            border-radius: 24px;
+            padding: 25px;
+            margin-bottom: 30px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.03);
+        }
+        .search-box {
+            background: #F8FAFC;
+            border: 1px solid #E2E8F0;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            padding: 12px 20px;
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+        .search-box i { color: #A0AEC0; }
+        .search-box input {
+            border: none;
+            background: transparent;
+            outline: none;
+            width: 100%;
+            padding: 0;
+            font-size: 14px;
+            color: var(--text-dark);
+        }
+
+        .filter-row {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+        .filter-label {
+            font-size: 14px;
+            font-weight: 700;
+            color: var(--text-dark);
+        }
+        .filter-chips {
+            display: flex;
+            gap: 10px;
+        }
+        .chip {
+            padding: 8px 16px;
+            border-radius: 12px;
+            background: #F1F5F9;
+            color: #4A5568;
+            font-size: 13px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .chip.active {
+            background: var(--primary-green);
+            color: white;
+        }
+
+        /* History List */
+        .history-list {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+        .history-card {
+            background: white;
+            border-radius: 24px;
+            padding: 25px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.03);
+            border: 1px solid transparent;
+            transition: all 0.3s;
+        }
+        .history-card:hover {
+            box-shadow: 0 10px 30px rgba(0,0,0,0.08);
+            border-color: #E2E8F0;
+        }
+
+        .card-top {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 20px;
+        }
+        .animal-meta {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+        .animal-pic {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            object-fit: cover;
+        }
+        .tag-info h3 {
+            font-size: 18px;
+            font-weight: 800;
+            margin: 0;
+            color: var(--text-dark);
+        }
+        .tag-info p {
+            font-size: 12px;
+            color: var(--text-gray);
+            margin: 0;
+        }
+
+        .status-area {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-end;
+            gap: 5px;
+        }
+        .status-pill {
+            padding: 5px 12px;
+            border-radius: 12px;
+            font-size: 11px;
+            font-weight: 800;
+        }
+        .pill-inprogress { background: #FFF7ED; color: #C2410C; }
+        .pill-completed { background: #F0FDF4; color: #15803D; }
+        .date-info {
+            font-size: 12px;
+            color: var(--text-gray);
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .card-details {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+            margin-bottom: 15px;
+        }
+        .detail-item {
+            display: flex;
+            flex-direction: column;
+        }
+        .detail-item .label {
+            font-size: 11px;
+            font-weight: 800;
+            color: var(--text-gray);
+            margin-bottom: 2px;
+        }
+        .detail-item .value {
+            font-size: 14px;
+            font-weight: 700;
+            color: var(--text-dark);
+        }
+
+        .notes-section {
+            background-color: #F8FAFC;
+            border-radius: 12px;
+            padding: 12px 15px;
+            margin-top: 15px;
+        }
+        .notes-title {
+            font-size: 11px;
+            font-weight: 800;
+            color: var(--text-gray);
+            margin-bottom: 4px;
+            display: block;
+        }
+        .notes-text {
+            font-size: 13px;
+            color: var(--text-dark);
+            line-height: 1.4;
+        }
+
+        /* Logout Modal */
+        .modal-overlay { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(0, 0, 0, 0.4); backdrop-filter: blur(4px); display: none; align-items: center; justify-content: center; z-index: 1000; animation: fadeIn 0.2s ease-out; }
+        .modal-card { background: white; border-radius: 24px; padding: 40px; width: 380px; text-align: center; box-shadow: 0 20px 40px rgba(0,0,0,0.1); transform: scale(0.9); transition: transform 0.2s ease-out; }
+        .modal-overlay.active { display: flex; }
+        .modal-overlay.active .modal-card { transform: scale(1); }
+        .modal-icon { width: 70px; height: 70px; background: #FFF1F2; color: #E11D48; border-radius: 20px; display: flex; align-items: center; justify-content: center; font-size: 28px; margin: 0 auto 20px auto; }
+        .modal-title { font-size: 22px; font-weight: 800; margin-bottom: 10px; }
+        .modal-text { color: var(--text-gray); font-size: 14px; margin-bottom: 25px; line-height: 1.5; }
+        .modal-btns { display: flex; flex-direction: column; gap: 10px; }
+        .m-btn { padding: 14px; border-radius: 12px; font-weight: 700; cursor: pointer; text-decoration: none; transition: all 0.2s; border: none; }
+        .m-btn-logout { background: #E11D48; color: white; }
+        .m-btn-cancel { background: #F1F5F9; color: #475569; }
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+    </style>
+</head>
+<body>
+
+    <!-- Desktop Sidebar -->
+    <aside class="sidebar">
+        <div class="sidebar-brand">
+            <div class="sidebar-logo">
+                <img src="/assets/logo.png" alt="Logo" onerror="this.src='data:image/svg+xml;utf8,<svg xmlns=\'http://www.w3.org/2000/svg\' viewBox=\'0 0 100 100\'><circle cx=\'50\' cy=\'50\' r=\'45\' fill=\'%23e0e0e0\'/><text x=\'50\' y=\'55\' font-family=\'sans-serif\' font-weight=\'bold\' font-size=\'30\' text-anchor=\'middle\' fill=\'%23888\'>RS</text></svg>';">
+            </div>
+            <h2 class="sidebar-title">ResidueSafe</h2>
+        </div>
+        <nav class="sidebar-nav">
+            <a href="/farmer_dashboard" class="nav-link"><i class="fas fa-home"></i> Dashboard</a>
+            <a href="/add_treatment" class="nav-link"><i class="fas fa-syringe"></i> Treatments</a>
+            <a href="/withdrawal_status" class="nav-link"><i class="fas fa-stopwatch"></i> Withdrawal Status</a>
+            <a href="/add_animals" class="nav-link"><i class="fas fa-paw"></i> Add Animals</a>
+            <a href="/treatment_history" class="nav-link active"><i class="fas fa-history"></i> History & Reports</a>
+            <a href="#" class="nav-link" style="margin-top:auto;" onclick="showLogoutModal()"><i class="fas fa-sign-out-alt"></i> Logout</a>
+        </nav>
+    </aside>
+
+    <div class="main-wrapper">
+        <!-- Desktop Header -->
+        <header class="top-header">
+            <div class="header-profile-area">
+                <a href="/profile_settings" class="profile-btn" style="text-decoration: none; color: inherit;">
+                    <div class="profile-avatar">U</div>
+                    <div class="profile-info">
+                        <span class="profile-name">User Account</span>
+                        <span class="profile-role">Farmer Portal</span>
+                        <span class="profile-farm" style="font-size: 11px; opacity: 0.8; font-weight: 500;">Green Pastures Farm</span>
+                    </div>
+                </a>
+            </div>
+        </header>
+
+        <div class="content">
+            <div class="page-header">
+                <h1 class="page-title">Treatment History</h1>
+                <p class="page-subtitle">Complete log of all recorded antimicrobial treatments.</p>
+            </div>
+
+            <!-- Filter Card -->
+            <div class="filter-section">
+                <div class="search-box">
+                    <i class="fas fa-search"></i>
+                    <input type="text" id="historySearch" placeholder="Search by Tag ID or drug name..." onkeyup="filterHistory()">
+                </div>
+                <div class="filter-row">
+                    <span class="filter-label">Filter:</span>
+                    <div class="filter-chips">
+                        <span class="chip active" onclick="setChipFilter('All', this)">All</span>
+                        <span class="chip" onclick="setChipFilter('Cow', this)">Cow</span>
+                        <span class="chip" onclick="setChipFilter('Buffalo', this)">Buffalo</span>
+                        <span class="chip" onclick="setChipFilter('Hen', this)">Hen</span>
+                        <span class="chip" onclick="setChipFilter('Goat', this)">Goat</span>
+                        <span class="chip" onclick="setChipFilter('Sheep', this)">Sheep</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- History Entries -->
+            <div class="history-list">
+                
+                <!-- Entry 1 -->
+                <div class="history-card">
+                    <div class="card-top">
+                        <div class="animal-meta">
+                            <img src="https://images.unsplash.com/photo-1570042225831-d98fa7577f1e?auto=format&fit=crop&q=80&w=200" class="animal-pic">
+                            <div class="tag-info">
+                                <h3>TAG-10492</h3>
+                                <p>Cow</p>
+                            </div>
+                        </div>
+                        <div class="status-area">
+                            <div class="status-pill pill-inprogress">Inprogress</div>
+                            <div class="date-info">
+                                <i class="far fa-calendar-alt"></i> Oct 18, 2023
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card-details">
+                        <div class="detail-item">
+                            <span class="label">Drug</span>
+                            <span class="value">Penicillin G</span>
+                        </div>
+                        <div class="detail-item">
+                            <span class="label">Dosage</span>
+                            <span class="value">15 ml</span>
+                        </div>
+                        <div class="detail-item">
+                            <span class="label">Milk Safe</span>
+                            <span class="value">Oct 25, 2023</span>
+                        </div>
+                        <div class="detail-item">
+                            <span class="label">Meat Safe</span>
+                            <span class="value">Nov 15, 2023</span>
+                        </div>
+                    </div>
+                    <div class="notes-section">
+                        <span class="notes-title">Notes</span>
+                        <p class="notes-text">Mild respiratory infection symptoms observed. Administered first course of treatment.</p>
+                    </div>
+                </div>
+
+                <!-- Entry 2 -->
+                <div class="history-card">
+                    <div class="card-top">
+                        <div class="animal-meta">
+                            <img src="https://images.unsplash.com/photo-1524024973431-2ad916746881?auto=format&fit=crop&q=80&w=200" class="animal-pic">
+                            <div class="tag-info">
+                                <h3>GOAT-482</h3>
+                                <p>Goat</p>
+                            </div>
+                        </div>
+                        <div class="status-area">
+                            <div class="status-pill pill-completed">Completed</div>
+                            <div class="date-info">
+                                <i class="far fa-calendar-alt"></i> Sep 10, 2023
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card-details">
+                        <div class="detail-item">
+                            <span class="label">Drug</span>
+                            <span class="value">Oxytetracycline</span>
+                        </div>
+                        <div class="detail-item">
+                            <span class="label">Dosage</span>
+                            <span class="value">500 mg</span>
+                        </div>
+                        <div class="detail-item">
+                            <span class="label">Meat Safe</span>
+                            <span class="value">Sep 28, 2023</span>
+                        </div>
+                        <div class="detail-item">
+                            <span class="label">N/A</span>
+                            <span class="value">-</span>
+                        </div>
+                    </div>
+                    <div class="notes-section">
+                        <span class="notes-title">Notes</span>
+                        <p class="notes-text">Post-surgical recovery. Final dosage administered. No further symptoms reported.</p>
+                    </div>
+                </div>
+
+                <!-- Entry 3 -->
+                <div class="history-card">
+                    <div class="card-top">
+                        <div class="animal-meta">
+                            <img src="https://images.unsplash.com/photo-1548550023-2bdb3c5beed7?auto=format&fit=crop&q=80&w=200" class="animal-pic">
+                            <div class="tag-info">
+                                <h3>HEN-092</h3>
+                                <p>Hen</p>
+                            </div>
+                        </div>
+                        <div class="status-area">
+                            <div class="status-pill pill-completed">Completed</div>
+                            <div class="date-info">
+                                <i class="far fa-calendar-alt"></i> Aug 12, 2023
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card-details">
+                        <div class="detail-item">
+                            <span class="label">Drug</span>
+                            <span class="value">Amoxicillin</span>
+                        </div>
+                        <div class="detail-item">
+                            <span class="label">Dosage</span>
+                            <span class="value">2 ml</span>
+                        </div>
+                        <div class="detail-item">
+                            <span class="label">Egg Safe</span>
+                            <span class="value">Aug 20, 2023</span>
+                        </div>
+                        <div class="detail-item">
+                            <span class="label">Meat Safe</span>
+                            <span class="value">Aug 25, 2023</span>
+                        </div>
+                    </div>
+                    <div class="notes-section">
+                        <span class="notes-title">Notes</span>
+                        <p class="notes-text">Routine preventive treatment for the flock area.</p>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+    <!-- Logout Modal Overlay -->
+    <div class="modal-overlay" id="logoutModal">
+        <div class="modal-card">
+            <div class="modal-icon"><i class="fas fa-sign-out-alt"></i></div>
+            <div class="modal-title">Log Out?</div>
+            <p class="modal-text">Are you sure you want to log out of ResidueSafe? You will need to sign in again to access your farm data.</p>
+            <div class="modal-btns">
+                <button class="m-btn m-btn-logout" onclick="handleLogout()">Yes, Log Out</button>
+                <button class="m-btn m-btn-cancel" onclick="hideLogoutModal()">Cancel</button>
+            </div>
+        </div>
+    </div>
+    <script>
+        function showLogoutModal() { document.getElementById('logoutModal').classList.add('active'); }
+        function hideLogoutModal() { document.getElementById('logoutModal').classList.remove('active'); }
+        function handleLogout() { localStorage.clear(); window.location.href = '/index'; }
+
+        document.addEventListener('DOMContentLoaded', async () => {
+            const userData = localStorage.getItem('user');
+            if (!userData) {
+                window.location.href = '/login';
+                return;
+            }
+            const user = JSON.parse(userData);
+            
+            // Sync Profile Info
+            document.querySelector('.profile-name').textContent = user.full_name || 'Farmer';
+            document.querySelector('.profile-farm').textContent = user.farm_name || 'My Farm';
+
+            fetchHistory(user.id);
+        });
+
+        async function fetchHistory(userId, type = 'All') {
+            try {
+                const url = `http://127.0.0.1:5000/treatment-history/${userId}?type=${type}`;
+                const response = await fetch(url);
+                const data = await response.json();
+                
+                if (data.status === "success") {
+                    renderHistory(data.data);
+                }
+            } catch (err) {
+                console.error("Fetch History Error:", err);
+            }
+        }
+
+        function renderHistory(records) {
+            const list = document.querySelector('.history-list');
+            list.innerHTML = '';
+
+            const speciesImages = {
+                'cow': 'https://images.unsplash.com/photo-1570042225831-d98fa7577f1e?auto=format&fit=crop&q=80&w=200',
+                'hen': 'https://images.unsplash.com/photo-1548550023-2bdb3c5beed7?auto=format&fit=crop&q=80&w=200',
+                'buffalo': 'https://images.unsplash.com/photo-1589923158776-cb4485d99fd6?auto=format&fit=crop&q=80&w=200',
+                'sheep': 'https://images.unsplash.com/photo-1484557985045-edf25e08da73?auto=format&fit=crop&q=80&w=200',
+                'pig': 'https://images.unsplash.com/photo-1516467508483-a7212febe31a?auto=format&fit=crop&q=80&w=200',
+                'goat': 'https://images.unsplash.com/photo-1524024973431-2ad916746881?auto=format&fit=crop&q=80&w=200'
+            };
+
+            const getImg = (sp) => speciesImages[(sp || '').toLowerCase()] || 'https://via.placeholder.com/200?text=' + sp;
+
+            records.forEach(r => {
+                const statusClass = r.status === 'Inprogress' ? 'pill-inprogress' : 'pill-completed';
+                const card = `
+                    <div class="history-card" data-species="${r.type}">
+                        <div class="card-top">
+                            <div class="animal-meta">
+                                <img src="${getImg(r.type)}" class="animal-pic">
+                                <div class="tag-info">
+                                    <h3>${r.id}</h3>
+                                    <p>${r.type}</p>
+                                </div>
+                            </div>
+                            <div class="status-area">
+                                <div class="status-pill ${statusClass}">${r.status}</div>
+                                <div class="date-info">
+                                    <i class="far fa-calendar-alt"></i> ${r.date}
+                                </div>
+                            </div>
+                        </div>
+                        <div class="card-details">
+                            <div class="detail-item">
+                                <span class="label">Drug</span>
+                                <span class="value">${r.drug}</span>
+                            </div>
+                            <div class="detail-item">
+                                <span class="label">Dosage</span>
+                                <span class="value">${r.dosage || 'N/A'}</span>
+                            </div>
+                            <div class="detail-item">
+                                <span class="label">Safe Dates</span>
+                                <span class="value">Meat: ${r.safeDateMeat}</span>
+                            </div>
+                            <div class="detail-item">
+                                <span class="label">Milk/Egg Safe</span>
+                                <span class="value">${r.safeDateMilk || r.safeDateEggs || '-'}</span>
+                            </div>
+                        </div>
+                        ${r.notes ? `
+                            <div class="notes-section">
+                                <span class="notes-title">Notes</span>
+                                <p class="notes-text">${r.notes}</p>
+                            </div>
+                        ` : ''}
+                    </div>
+                `;
+                list.innerHTML += card;
+            });
+        }
+
+        let currentSpeciesFilter = 'All';
+
+        function setChipFilter(species, element) {
+            document.querySelectorAll('.chip').forEach(chip => chip.classList.remove('active'));
+            element.classList.add('active');
+            
+            const userData = JSON.parse(localStorage.getItem('user'));
+            fetchHistory(userData.id, species);
+        }
+
+        function filterHistory() {
+            const searchText = document.getElementById('historySearch').value.toLowerCase();
+            const cards = document.querySelectorAll('.history-card');
+
+            cards.forEach(card => {
+                const text = card.textContent.toLowerCase();
+                if (text.includes(searchText)) {
+                    card.style.display = 'block';
+                } else {
+                    card.style.display = 'none';
+                }
+            });
+        }
+    </script>
+</body>
+</html>

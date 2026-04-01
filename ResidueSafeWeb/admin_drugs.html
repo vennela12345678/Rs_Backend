@@ -1,0 +1,591 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Drug Registry - Admin - ResidueSafe Portal</title>
+    <link rel="stylesheet" href="/style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --sidebar-width: 260px;
+            --admin-blue-deep: #1A365D;
+            --admin-blue-light: #2B7FFF;
+            --admin-bg-light: #F8FAFC;
+        }
+        body, html {
+            height: 100vh;
+            margin: 0;
+            font-family: 'Inter', sans-serif;
+            background-color: #F4F7F6;
+            overflow: hidden;
+        }
+        .app-container {
+            display: flex;
+            width: 100%;
+            height: 100vh;
+        }
+        .app-container {
+            display: flex;
+            width: 100%;
+            min-height: 100vh;
+        }
+        .sidebar {
+            width: 240px;
+            background: var(--admin-blue-deep);
+            color: white;
+            display: flex;
+            flex-direction: column;
+            position: fixed;
+            top: 0;
+            left: 0;
+            height: 100vh;
+            box-shadow: 2px 0 10px rgba(0,0,0,0.05);
+            z-index: 1001;
+        }
+        .sidebar-header {
+            padding: 40px 30px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            border-bottom: 1px solid rgba(255,255,255,0.05);
+        }
+        .sidebar-logo { width: 40px; height: 40px; }
+        .sidebar-title { font-size: 1.4rem; font-weight: 800; letter-spacing: -0.5px; }
+        .sidebar-nav {
+            flex: 1;
+            padding: 30px 15px;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+        .nav-link {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            padding: 14px 20px;
+            color: rgba(255,255,255,0.7);
+            text-decoration: none;
+            border-radius: 12px;
+            font-weight: 500;
+            transition: all 0.3s;
+        }
+        .nav-link:hover, .nav-link.active {
+            background: rgba(255,255,255,0.1);
+            color: white;
+        }
+        .nav-link.active {
+            background: var(--admin-blue-light);
+            box-shadow: 0 4px 15px rgba(43, 127, 255, 0.3);
+        }
+        .sidebar-footer { padding: 30px; border-top: 1px solid rgba(255,255,255,0.05); }
+
+        /* Main Content area */
+        .main-content {
+            margin-left: 240px;
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            height: 100vh;
+            overflow-y: auto;
+            background-color: #F4F7F6;
+        }
+        .top-header {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            padding: 15px 40px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+            position: sticky;
+            top: 0;
+            z-index: 900;
+            width: 100%;
+            box-sizing: border-box;
+        }
+        .user-pill {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            background: #F8FAFC;
+            padding: 8px 15px;
+            border-radius: 50px;
+            border: 1px solid #EDF2F7;
+        }
+        .user-info-text { text-align: right; }
+        .user-name { font-weight: 800; color: #1A202C; display: block; font-size: 0.9rem; }
+        .user-role { font-size: 0.75rem; color: #718096; display: block; }
+        .user-avatar { width: 35px; height: 35px; background: var(--admin-blue-light); border-radius: 50%; display: flex; align-items: center; justify-content: center; color: white; font-weight: 800; }
+        
+        .breadcrumb { display: flex; align-items: center; gap: 10px; color: #718096; font-size: 0.8rem; font-weight: 500; }
+        .avatar {
+            width: 40px;
+            height: 40px;
+            background: var(--admin-blue-light);
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 800;
+        }
+
+        .registry-body { padding: 25px 40px; flex: 1; width: 100%; }
+        .page-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 25px;
+            width: 100%;
+        }
+        .page-title-group h1 { font-size: 1.75rem; font-weight: 800; color: #1A202C; margin-bottom: 5px; }
+        .page-title-group p { color: #718096; font-size: 0.95rem; }
+
+        .btn-primary {
+            background: var(--admin-blue-light);
+            color: white;
+            padding: 14px 25px;
+            border-radius: 12px;
+            border: none;
+            font-weight: 800;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            box-shadow: 0 4px 15px rgba(43, 127, 255, 0.3);
+            transition: all 0.3s;
+        }
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(43, 127, 255, 0.4);
+            background: #1D70F5;
+        }
+
+        .search-container {
+            background: white;
+            border-radius: 16px;
+            padding: 10px;
+            display: flex;
+            align-items: center;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.03);
+            margin-bottom: 40px;
+            max-width: 600px;
+        }
+        .search-icon { padding: 0 20px; color: #718096; }
+        .search-input {
+            border: none;
+            flex: 1;
+            padding: 15px 10px;
+            font-size: 1rem;
+            outline: none;
+        }
+
+        .drug-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+            gap: 25px;
+            width: 100%;
+        }
+        .drug-card {
+            background: white;
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.02);
+            transition: all 0.3s;
+            border: 1px solid #EDF2F7;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+        .drug-card:hover { transform: translateY(-5px); border-color: var(--admin-blue-light); }
+        .drug-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 10px; }
+        .drug-name-box { display: flex; align-items: center; gap: 12px; }
+        .drug-name-box i { color: var(--admin-blue-light); font-size: 1.25rem; }
+        .drug-name { font-size: 1.25rem; font-weight: 800; color: #1A202C; }
+        
+        .edit-btn {
+            width: 36px;
+            height: 36px;
+            background: #EBF8FF;
+            color: var(--admin-blue-light);
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .edit-btn:hover { background: var(--admin-blue-light); color: white; }
+
+        .specs-row { font-size: 0.9rem; display: flex; gap: 8px; line-height: 1.5; }
+        .specs-row strong { font-weight: 700; color: #4A5568; width: 140px; }
+        .specs-row span { color: #718096; }
+
+        .divider { height: 1px; background: #EDF2F7; margin: 10px 0; }
+        
+        .withdrawal-title { font-size: 0.75rem; font-weight: 800; color: #A0AEC0; text-transform: uppercase; letter-spacing: 0.5px;}
+        .withdrawal-box { display: flex; gap: 10px; flex-wrap: wrap; }
+        .withdrawal-badge {
+            padding: 8px 12px;
+            border-radius: 10px;
+            font-size: 0.8rem;
+            font-weight: 700;
+        }
+        .meat-badge { background: #FFF5F5; color: #E53E3E; }
+        .milk-badge { background: #EBF8FF; color: #3182CE; }
+        .egg-badge { background: #FFFFF0; color: #D69E2E; }
+
+        /* Modal Styles */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.5);
+            backdrop-filter: blur(8px);
+            z-index: 2000;
+            align-items: center;
+            justify-content: center;
+        }
+        .modal-content {
+            background: white;
+            width: 90%;
+            max-width: 600px;
+            border-radius: 30px;
+            padding: 40px;
+            box-shadow: 0 25px 50px rgba(0,0,0,0.2);
+            animation: slideUp 0.3s ease-out;
+        }
+        @keyframes slideUp { from { transform: translateY(40px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+        
+        .modal-title { font-size: 1.75rem; font-weight: 800; color: #1A202C; margin-bottom: 25px; }
+        .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+        .form-group { margin-bottom: 20px; }
+        .form-label { display: block; font-size: 0.85rem; font-weight: 700; color: #4A5568; margin-bottom: 8px; }
+        .form-input { 
+            width: 100%; 
+            padding: 12px 15px; 
+            border: 1.5px solid #E2E8F0; 
+            border-radius: 10px; 
+            font-size: 0.95rem; 
+            outline: none;
+            transition: all 0.3s;
+        }
+        .form-input:focus { border-color: var(--admin-blue-light); box-shadow: 0 0 0 3px rgba(43, 127, 255, 0.1); }
+        .full-row { grid-column: span 2; }
+        .btn-row { display: flex; gap: 15px; margin-top: 20px; }
+        .btn-cancel { background: #F7FAFC; color: #718096; border: 1.5px solid #E2E8F0; padding: 14px 25px; border-radius: 12px; cursor: pointer; flex: 1; font-weight: 700; }
+        .btn-save { background: var(--admin-blue-light); color: white; border: none; padding: 14px 25px; border-radius: 12px; cursor: pointer; flex: 1; font-weight: 700; }
+    </style>
+</head>
+<body>
+
+    <div class="app-container">
+    <!-- Sidebar Section -->
+    <aside class="sidebar">
+        <div class="sidebar-header">
+            <img src="/assets/logo.png" alt="Logo" class="sidebar-logo" onerror="this.src='https://via.placeholder.com/40/fff/2B7FFF?text=RS'">
+            <span class="sidebar-title">ResidueSafe</span>
+        </div>
+        <nav class="sidebar-nav">
+            <a href="/admin_dashboard" class="nav-link">
+                <i class="fas fa-th-large"></i> <span>Dashboard</span>
+            </a>
+            <a href="/admin_total_farms" class="nav-link">
+                <i class="fas fa-building"></i> <span>Registered Farms</span>
+            </a>
+            <a href="/admin_drugs" class="nav-link active">
+                <i class="fas fa-pills"></i> <span>Drug Registry</span>
+            </a>
+            <a href="/admin_profile" class="nav-link">
+                <i class="fas fa-user-circle"></i> <span>Admin Profile</span>
+            </a>
+        </nav>
+        <div class="sidebar-footer">
+            <a href="/admin_logout" class="nav-link" style="color: #FC8181;">
+                <i class="fas fa-sign-out-alt"></i> <span>Logout Portal</span>
+            </a>
+        </div>
+    </aside>
+
+    <main class="main-content">
+        <header class="top-header">
+            <div class="breadcrumb"><i class="fas fa-home"></i> / Compliance / Drug Database</div>
+            <div class="user-pill">
+                <div class="user-info-text">
+                    <span class="user-name">Administrator</span>
+                    <span class="user-role">Root Access</span>
+                </div>
+                <div class="user-avatar">A</div>
+            </div>
+        </header>
+
+        <div class="registry-body">
+            <div class="page-header">
+                <div class="page-title-group">
+                    <h1>Drug Database Registry</h1>
+                    <p>Global standards for pharmacological withdrawal and animal safety compliance.</p>
+                </div>
+                <button class="btn-primary" onclick="openModal('add')">
+                    <i class="fas fa-plus-circle"></i> Add New Record
+                </button>
+            </div>
+
+            <div class="search-container">
+                <i class="fas fa-search search-icon"></i>
+                <input type="text" class="search-input" placeholder="Search by name, active ingredient, or manufacturer ...">
+            </div>
+
+            <div class="drug-grid">
+                <!-- Drug 1 -->
+                <div class="drug-card">
+                    <div class="drug-header">
+                        <div class="drug-name-box">
+                            <i class="fas fa-pills"></i>
+                            <span class="drug-name">Penicillin G</span>
+                        </div>
+                        <button class="edit-btn" onclick="openModal('edit', 'Penicillin G')">
+                            <i class="fas fa-edit"></i>
+                        </button>
+                    </div>
+                    <div class="specs-row"><strong>Active Ingredient:</strong> <span>Benzylpenicillin</span></div>
+                    <div class="specs-row"><strong>Manufacturer:</strong> <span>Pfizer Animal Health</span></div>
+                    <div class="specs-row"><strong>Target Species:</strong> <span>Cow, Buffalo, Pig</span></div>
+                    <div class="divider"></div>
+                    <div class="withdrawal-title">Compliance Defaults</div>
+                    <div class="withdrawal-box">
+                        <span class="withdrawal-badge meat-badge">Meat: 10 Days</span>
+                        <span class="withdrawal-badge milk-badge">Milk: 72 Hours</span>
+                        <span class="withdrawal-badge egg-badge">Eggs: N/A</span>
+                    </div>
+                </div>
+
+                <!-- Drug 2 -->
+                <div class="drug-card">
+                    <div class="drug-header">
+                        <div class="drug-name-box">
+                            <i class="fas fa-pills"></i>
+                            <span class="drug-name">Ivermectin</span>
+                        </div>
+                        <button class="edit-btn" onclick="openModal('edit', 'Ivermectin')">
+                            <i class="fas fa-edit"></i>
+                        </button>
+                    </div>
+                    <div class="specs-row"><strong>Active Ingredient:</strong> <span>Ivermectin</span></div>
+                    <div class="specs-row"><strong>Manufacturer:</strong> <span>Boehringer Ingelheim</span></div>
+                    <div class="specs-row"><strong>Target Species:</strong> <span>All Livestock</span></div>
+                    <div class="divider"></div>
+                    <div class="withdrawal-title">Compliance Defaults</div>
+                    <div class="withdrawal-box">
+                        <span class="withdrawal-badge meat-badge">Meat: 28 Days</span>
+                        <span class="withdrawal-badge milk-badge">Milk: 0 Hours</span>
+                    </div>
+                </div>
+
+                <!-- Drug 3 -->
+                <div class="drug-card">
+                    <div class="drug-header">
+                        <div class="drug-name-box">
+                            <i class="fas fa-pills"></i>
+                            <span class="drug-name">Oxytetracycline</span>
+                        </div>
+                        <button class="edit-btn" onclick="openModal('edit', 'Oxytetracycline')">
+                            <i class="fas fa-edit"></i>
+                        </button>
+                    </div>
+                    <div class="specs-row"><strong>Active Ingredient:</strong> <span>Oxytetracycline HCl</span></div>
+                    <div class="specs-row"><strong>Manufacturer:</strong> <span>MSD Animal Health</span></div>
+                    <div class="specs-row"><strong>Target Species:</strong> <span>Cow, Sheep, Hen</span></div>
+                    <div class="divider"></div>
+                    <div class="withdrawal-title">Compliance Defaults</div>
+                    <div class="withdrawal-box">
+                        <span class="withdrawal-badge meat-badge">Meat: 14 Days</span>
+                        <span class="withdrawal-badge milk-badge">Milk: 96 Hours</span>
+                        <span class="withdrawal-badge egg-badge">Eggs: 7 Days</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+    </div>
+
+    <!-- Unified Add/Edit Modal -->
+    <div id="drugModal" class="modal">
+        <div class="modal-content">
+            <h2 class="modal-title" id="modalHeaderTitle">Add New Drug</h2>
+            <form onsubmit="handleSave(event)">
+                <div class="form-grid">
+                    <div class="form-group full-row">
+                        <label class="form-label">Generic Drug Name *</label>
+                        <input type="text" id="drugNameInput" class="form-input" placeholder="e.g., Penicillin G" required>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Active Ingredient</label>
+                        <input type="text" id="ingredientInput" class="form-input" placeholder="e.g., Benzylpenicillin">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Manufacturer</label>
+                        <input type="text" id="manufacturerInput" class="form-input" placeholder="e.g., Pfizer">
+                    </div>
+                    <div class="form-group full-row">
+                        <label class="form-label">Target Species *</label>
+                        <input type="text" id="speciesInput" class="form-input" placeholder="e.g., Cow, Buffalo, Pig" required>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Meat Period (Days)</label>
+                        <input type="number" id="meatInput" class="form-input" value="0">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Milk Period (Hours)</label>
+                        <input type="number" id="milkInput" class="form-input" value="0">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Egg Period (Days)</label>
+                        <input type="number" id="eggInput" class="form-input" value="0">
+                    </div>
+                </div>
+                <div class="btn-row">
+                    <button type="button" class="btn-cancel" onclick="closeModal()">Dismiss</button>
+                    <button type="submit" class="btn-save">Verify and Save</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const adminData = localStorage.getItem('adminUser');
+            if (!adminData) {
+                window.location.href = '/admin_login';
+                return;
+            }
+            fetchDrugs();
+
+            // Real-time search
+            document.querySelector('.search-input').addEventListener('input', (e) => {
+                const term = e.target.value.toLowerCase();
+                const cards = document.querySelectorAll('.drug-card');
+                cards.forEach(card => {
+                    const text = card.textContent.toLowerCase();
+                    card.style.display = text.includes(term) ? 'flex' : 'none';
+                });
+            });
+        });
+
+        async function fetchDrugs() {
+            try {
+                const response = await fetch('http://127.0.0.1:5000/admin/drugs');
+                const data = await response.json();
+                if (data.status === 'success') renderDrugs(data.data);
+            } catch (err) {
+                console.error("Drug Fetch Error:", err);
+            }
+        }
+
+        function renderDrugs(drugs) {
+            const grid = document.querySelector('.drug-grid');
+            grid.innerHTML = '';
+            
+            drugs.forEach(drug => {
+                const card = `
+                    <div class="drug-card">
+                        <div class="drug-header">
+                            <div class="drug-name-box">
+                                <i class="fas fa-pills"></i>
+                                <span class="drug-name">${drug.name}</span>
+                            </div>
+                            <button class="edit-btn" onclick="openModal('edit', ${JSON.stringify(drug).replace(/"/g, '&quot;')})">
+                                <i class="fas fa-edit"></i>
+                            </button>
+                        </div>
+                        <div class="specs-row"><strong>Target Species:</strong> <span>${drug.species}</span></div>
+                        <div class="divider"></div>
+                        <div class="withdrawal-title">Compliance Defaults</div>
+                        <div class="withdrawal-box">
+                            <span class="withdrawal-badge meat-badge">${drug.meatWithdrawal}</span>
+                            <span class="withdrawal-badge milk-badge">${drug.milkWithdrawal}</span>
+                            <span class="withdrawal-badge egg-badge">${drug.eggsWithdrawal}</span>
+                        </div>
+                    </div>
+                `;
+                grid.innerHTML += card;
+            });
+        }
+
+        const modal = document.getElementById('drugModal');
+        let currentEditName = '';
+
+        function openModal(mode, drug = null) {
+            const title = document.getElementById('modalHeaderTitle');
+            const nameInput = document.getElementById('drugNameInput');
+            const speciesInput = document.getElementById('speciesInput');
+            const meatInput = document.getElementById('meatInput');
+            const milkInput = document.getElementById('milkInput');
+            const eggInput = document.getElementById('eggInput');
+
+            if (mode === 'edit' && drug) {
+                title.textContent = 'Edit Record: ' + drug.name;
+                currentEditName = drug.name;
+                nameInput.value = drug.name;
+                nameInput.disabled = true; // Name is identifier in backend PUT
+                speciesInput.value = drug.species;
+                meatInput.value = drug.meatWithdrawal.replace('Meat: ', '').replace(' days', '');
+                milkInput.value = drug.milkWithdrawal.replace('Milk: ', '').replace(' days', '');
+                eggInput.value = drug.eggsWithdrawal.replace('Eggs: ', '').replace(' days', '');
+            } else {
+                title.textContent = 'Register New Drug';
+                currentEditName = '';
+                nameInput.value = '';
+                nameInput.disabled = false;
+                speciesInput.value = '';
+                meatInput.value = '0';
+                milkInput.value = '0';
+                eggInput.value = '0';
+            }
+            modal.style.display = 'flex';
+        }
+
+        function closeModal() { modal.style.display = 'none'; }
+        window.onclick = function(event) { if (event.target == modal) closeModal(); }
+
+        async function handleSave(event) {
+            event.preventDefault();
+            
+            const payload = {
+                name: document.getElementById('drugNameInput').value,
+                species: document.getElementById('speciesInput').value,
+                meat: document.getElementById('meatInput').value,
+                milk: document.getElementById('milkInput').value,
+                eggs: document.getElementById('eggInput').value
+            };
+
+            const isEdit = currentEditName !== '';
+            const url = isEdit ? 'http://127.0.0.1:5000/admin/edit-drug' : 'http://127.0.0.1:5000/admin/add-drug';
+            const method = isEdit ? 'PUT' : 'POST';
+
+            try {
+                const response = await fetch(url, {
+                    method: method,
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                });
+
+                const data = await response.json();
+                if (data.status === 'success') {
+                    alert(data.message);
+                    closeModal();
+                    fetchDrugs();
+                } else {
+                    alert('Error: ' + data.message);
+                }
+            } catch (err) {
+                console.error("Save Error:", err);
+                alert("Connection to server failed.");
+            }
+        }
+    </script>
+</body>
+</html>
