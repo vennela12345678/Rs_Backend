@@ -80,141 +80,44 @@ def validate_password(password):
 def health_check():
     return jsonify({"status": "success", "message": "animal_medicines backend running ✅"}), 200
 
-# =========================================================
-# RENDORS
+# ==========================================================
+# RENDORS (Dynamic Routing for Extensionless URLs)
 # ==========================================================
 
-@app.route("/index", methods=["GET"])
-def index_view():
+@app.before_request
+def clear_trailing_html():
+    # Only redirect GET requests that end in .html
+    if request.method == 'GET' and request.path.endswith('.html'):
+        new_url = request.path[:-5]
+        if request.query_string:
+            new_url += '?' + request.query_string.decode('utf-8')
+        return redirect(new_url, code=301)
+
+@app.route("/", methods=["GET"])
+def home_root():
+    """Serves the home page at the root URL."""
     return render_template("index.html")
 
-@app.route("/role", methods=["GET"])
-def role_view():
-    return render_template("role.html")
+@app.route("/<page>", methods=["GET"])
+def serve_any_page(page):
+    """
+    Acts as a dynamic renderer for all extensionless page requests.
+    Checks if a matching .html template exists in the templates folder.
+    """
+    # Prevent serving actual .html paths via this route if someone tries /index.html
+    if page.endswith(".html"):
+        return redirect(f"/{page[:-5]}", code=301)
 
-@app.route("/login", methods=["GET"])
-def login_view():
-    return render_template("login.html")
+    template_name = f"{page}.html"
+    template_path = os.path.join(app.template_folder, template_name)
+    
+    if os.path.exists(template_path):
+        return render_template(template_name)
+    
+    # If no matching template, let Flask continue to other routes or 404
+    abort(404)
 
-@app.route("/signup", methods=["GET"])
-def signup_view():
-    return render_template("signup.html")
 
-@app.route("/about", methods=["GET"])
-def about_view():
-    return render_template("about.html")
-
-@app.route("/add_animals", methods=["GET"])
-def add_animals_view():
-    return render_template("add_animals.html")
-
-@app.route("/add_new_animal", methods=["GET"])
-def add_new_animal_view():
-    return render_template("add_new_animal.html")
-
-@app.route("/add_treatment", methods=["GET"])
-def add_treatment_view():
-    return render_template("add_treatment.html")
-
-@app.route("/admin_change_password", methods=["GET"])
-def admin_change_password_view():
-    return render_template("admin_change_password.html")
-
-@app.route("/admin_dashboard", methods=["GET"])
-def admin_dashboard_view():
-    return render_template("admin_dashboard.html")
-
-@app.route("/admin_drugs", methods=["GET"])
-def admin_drugs_view():
-    return render_template("admin_drugs.html")
-
-@app.route("/admin_edit_profile", methods=["GET"])
-def admin_edit_profile_view():
-    return render_template("admin_edit_profile.html")
-
-@app.route("/admin_farm_details", methods=["GET"])
-def admin_farm_details_view():
-    return render_template("admin_farm_details.html")
-
-@app.route("/admin_forgot_password", methods=["GET"])
-def admin_forgot_password_view():
-    return render_template("admin_forgot_password.html")
-
-@app.route("/admin_login", methods=["GET"])
-def admin_login_view():
-    return render_template("admin_login.html")
-
-@app.route("/admin_logout", methods=["GET"])
-def admin_logout_view():
-    return render_template("admin_logout.html")
-
-@app.route("/admin_otp_verification", methods=["GET"])
-def admin_otp_verification_view():
-    return render_template("admin_otp_verification.html")
-
-@app.route("/admin_profile", methods=["GET"])
-def admin_profile_view():
-    return render_template("admin_profile.html")
-
-@app.route("/admin_reset_password", methods=["GET"])
-def admin_reset_password_view():
-    return render_template("admin_reset_password.html")
-
-@app.route("/admin_reset_success", methods=["GET"])
-def admin_reset_success_view():
-    return render_template("admin_reset_success.html")
-
-@app.route("/admin_total_farms", methods=["GET"])
-def admin_total_farms_view():
-    return render_template("admin_total_farms.html")
-
-@app.route("/alerts", methods=["GET"])
-def alerts_view():
-    return render_template("alerts.html")
-
-@app.route("/change_password", methods=["GET"])
-def change_password_view():
-    return render_template("change_password.html")
-
-@app.route("/edit_profile", methods=["GET"])
-def edit_profile_view():
-    return render_template("edit_profile.html")
-
-@app.route("/farmer_dashboard", methods=["GET"])
-def farmer_dashboard_view():
-    return render_template("farmer_dashboard.html")
-
-@app.route("/forgot_password", methods=["GET"])
-def forgot_password_view():
-    return render_template("forgot_password.html")
-
-@app.route("/otp_verification", methods=["GET"])
-def otp_verification_view():
-    return render_template("otp_verification.html")
-
-@app.route("/privacy", methods=["GET"])
-def privacy_view():
-    return render_template("privacy.html")
-
-@app.route("/profile_settings", methods=["GET"])
-def profile_settings_view():
-    return render_template("profile_settings.html")
-
-@app.route("/reset_password", methods=["GET"])
-def reset_password_view():
-    return render_template("reset_password.html")
-
-@app.route("/reset_success", methods=["GET"])
-def reset_success_view():
-    return render_template("reset_success.html")
-
-@app.route("/treatment_history", methods=["GET"])
-def treatment_history_view():
-    return render_template("treatment_history.html")
-
-@app.route("/withdrawal_status", methods=["GET"])
-def withdrawal_status_view():
-    return render_template("withdrawal_status.html")
 
 # ========================================================
 # ✅ REGISTER (Updated to save farm_name)
@@ -1290,23 +1193,6 @@ def update_admin_profile_full():
         conn.close()
 
 
-
-# ==========================================================
-# ✅ PAGE RENDERING & REDIRECTS
-# ==========================================================
-
-@app.before_request
-def clear_trailing_html():
-    # Only redirect GET requests that end in .html
-    if request.method == 'GET' and request.path.endswith('.html'):
-        new_url = request.path[:-5]
-        if request.query_string:
-            new_url += '?' + request.query_string.decode('utf-8')
-        return redirect(new_url, code=301)
-
-@app.route("/", methods=["GET"])
-def home_root():
-    return render_template("index.html")
 
 # ==========================================================
 # Run Server
